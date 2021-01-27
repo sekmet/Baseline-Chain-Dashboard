@@ -1,3 +1,3 @@
 # Baseline-Chain-Dashboard
-### to be complete in couple hours
+### project to be complete + live demo app in couple hours
 *Video Demo - Soon available*
