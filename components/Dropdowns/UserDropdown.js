@@ -1,7 +1,9 @@
 import React from "react";
+import { useWallet } from 'use-wallet';
 import { createPopper } from "@popperjs/core";
 
 const UserDropdown = () => {
+  const wallet = useWallet();
   // dropdown props
   const [dropdownPopoverShow, setDropdownPopoverShow] = React.useState(false);
   const btnDropdownRef = React.createRef();
@@ -19,7 +21,7 @@ const UserDropdown = () => {
     <>
       <a
         className="text-gray-600 block"
-        href="#pablo"
+        href="#baseline-dashboard"
         ref={btnDropdownRef}
         onClick={(e) => {
           e.preventDefault();
@@ -27,6 +29,7 @@ const UserDropdown = () => {
         }}
       >
         <div className="items-center flex">
+          <span className="mr-6 text-sm text-white">{wallet.account}</span>
           <span className="w-12 h-12 text-sm text-white bg-gray-300 inline-flex items-center justify-center rounded-full">
             <img
               alt="..."

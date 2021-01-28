@@ -2657,3 +2657,145 @@ MongooseServerSelectionError: connect ECONNREFUSED 127.0.0.1:27017
 [2021-01-27 23:47:59] [INFO] [COMMIT-MGR] [uploader]: Established websocket connection: wss://goerli.infura.io/ws/v3/655f1ad19d494a9fbbac8944c60c5ef8 
 [2021-01-27 23:47:59] [INFO] [COMMIT-MGR] [uploader]: REST server listening on port 4001. 
 [2021-01-27 23:48:06] [INFO] [COMMIT-MGR] [uploader]: Mongoose default connection disconnected. 
+[2021-01-27 02:24:22] [INFO] [COMMIT-MGR] [uploader]: Starting commmitment manager server... 
+[2021-01-27 02:24:22] [DEBUG] [COMMIT-MGR] [uploader]: Attempting to connect to db: localhost:27017/baseline 
+[2021-01-27 02:24:22] [INFO] [COMMIT-MGR] [uploader]: Successfully connected to mongo db. 
+[2021-01-27 02:24:27] [INFO] [COMMIT-MGR] [uploader]: Established websocket connection: wss://goerli.infura.io/ws/v3/655f1ad19d494a9fbbac8944c60c5ef8 
+[2021-01-27 02:24:27] [INFO] [COMMIT-MGR] [uploader]: REST server listening on port 4001. 
+[2021-01-27 02:24:41] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181487 
+[2021-01-27 02:24:55] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181488 
+[2021-01-27 02:25:10] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181489 
+[2021-01-27 02:25:26] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181490 
+[2021-01-27 02:25:41] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181490 
+[2021-01-27 02:25:41] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181491 
+[2021-01-27 02:25:56] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181492 
+[2021-01-27 02:26:11] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181493 
+[2021-01-27 02:26:26] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181494 
+[2021-01-27 02:26:41] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181495 
+[2021-01-27 02:26:56] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181496 
+[2021-01-27 02:27:10] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181497 
+[2021-01-27 02:27:26] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181498 
+[2021-01-27 02:27:41] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181499 
+[2021-01-27 02:27:55] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181500 
+[2021-01-27 02:28:10] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181501 
+[2021-01-27 02:28:26] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181502 
+[2021-01-27 02:28:41] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181503 
+[2021-01-27 02:28:56] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181504 
+[2021-01-27 02:29:11] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181505 
+[2021-01-27 02:29:40] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181506 
+[2021-01-27 02:29:40] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181507 
+[2021-01-27 02:29:55] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181508 
+[2021-01-27 02:30:11] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181509 
+[2021-01-27 02:30:26] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181510 
+[2021-01-27 02:30:41] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181511 
+[2021-01-27 02:30:56] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181512 
+[2021-01-27 02:31:12] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181513 
+[2021-01-27 02:31:26] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181514 
+[2021-01-27 02:31:40] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181515 
+[2021-01-27 02:31:56] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181516 
+[2021-01-27 02:32:11] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181517 
+[2021-01-27 02:32:25] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181518 
+[2021-01-27 02:32:41] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181519 
+[2021-01-27 02:32:57] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181520 
+[2021-01-27 02:33:10] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181521 
+[2021-01-27 02:33:25] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181522 
+[2021-01-27 02:33:41] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181523 
+[2021-01-27 02:33:56] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181524 
+[2021-01-27 02:34:11] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181525 
+[2021-01-27 02:34:26] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181526 
+[2021-01-27 02:34:30] [INFO] [COMMIT-MGR] [uploader]: Mongoose default connection disconnected. 
+[2021-01-27 02:47:18] [INFO] [COMMIT-MGR] [uploader]: infura: Infura's traditional jsonrpc API 
+[2021-01-27 02:47:18] [INFO] [COMMIT-MGR] [uploader]: Starting commmitment manager server... 
+[2021-01-27 02:47:18] [DEBUG] [COMMIT-MGR] [uploader]: Attempting to connect to db: localhost:27017/baseline 
+[2021-01-27 02:47:18] [INFO] [COMMIT-MGR] [uploader]: Successfully connected to mongo db. 
+[2021-01-27 02:47:23] [INFO] [COMMIT-MGR] [uploader]: Established websocket connection: wss://goerli.infura.io/ws/v3/655f1ad19d494a9fbbac8944c60c5ef8 
+[2021-01-27 02:47:23] [INFO] [COMMIT-MGR] [uploader]: REST server listening on port 4001. 
+[2021-01-27 02:47:40] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181578 
+[2021-01-27 02:47:40] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181579 
+[2021-01-27 02:47:56] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181580 
+[2021-01-27 02:48:15] [INFO] [COMMIT-MGR] [uploader]: infura: Infura's traditional jsonrpc API 
+[2021-01-27 02:48:15] [INFO] [COMMIT-MGR] [uploader]: Starting commmitment manager server... 
+[2021-01-27 02:48:15] [DEBUG] [COMMIT-MGR] [uploader]: Attempting to connect to db: localhost:27017/baseline 
+[2021-01-27 02:48:15] [INFO] [COMMIT-MGR] [uploader]: Successfully connected to mongo db. 
+[2021-01-27 02:48:20] [INFO] [COMMIT-MGR] [uploader]: Established websocket connection: undefined 
+[2021-01-27 02:48:20] [ERROR] [COMMIT-MGR] [uploader]: [WEBSOCKET] "error" event: Error: connect ECONNREFUSED 127.0.0.1:8546
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1141:16) 
+[2021-01-27 02:48:20] [ERROR] [COMMIT-MGR] [uploader]: [WEBSOCKET] "close" event: 1006 
+[2021-01-27 02:48:20] [INFO] [COMMIT-MGR] [uploader]: Established websocket connection: undefined 
+[2021-01-27 02:48:20] [INFO] [COMMIT-MGR] [uploader]: REST server listening on port 4001. 
+[2021-01-27 02:48:20] [ERROR] [COMMIT-MGR] [uploader]: [WEBSOCKET] "error" event: Error: connect ECONNREFUSED 127.0.0.1:8546
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1141:16) 
+[2021-01-27 02:48:20] [ERROR] [COMMIT-MGR] [uploader]: [WEBSOCKET] "close" event: 1006 
+[2021-01-27 02:48:23] [INFO] [COMMIT-MGR] [uploader]: Mongoose default connection disconnected. 
+[2021-01-27 02:49:59] [INFO] [COMMIT-MGR] [uploader]: infura: Infura's traditional jsonrpc API 
+[2021-01-27 02:49:59] [INFO] [COMMIT-MGR] [uploader]: Starting commmitment manager server... 
+[2021-01-27 02:49:59] [DEBUG] [COMMIT-MGR] [uploader]: Attempting to connect to db: localhost:27017/baseline 
+[2021-01-27 02:50:00] [INFO] [COMMIT-MGR] [uploader]: Successfully connected to mongo db. 
+[2021-01-27 02:50:05] [INFO] [COMMIT-MGR] [uploader]: Established websocket connection: undefined 
+[2021-01-27 02:50:05] [ERROR] [COMMIT-MGR] [uploader]: [WEBSOCKET] "error" event: Error: connect ECONNREFUSED 127.0.0.1:8546
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1141:16) 
+[2021-01-27 02:50:05] [ERROR] [COMMIT-MGR] [uploader]: [WEBSOCKET] "close" event: 1006 
+[2021-01-27 02:50:05] [INFO] [COMMIT-MGR] [uploader]: Established websocket connection: undefined 
+[2021-01-27 02:50:05] [INFO] [COMMIT-MGR] [uploader]: REST server listening on port 4001. 
+[2021-01-27 02:50:05] [ERROR] [COMMIT-MGR] [uploader]: [WEBSOCKET] "error" event: Error: connect ECONNREFUSED 127.0.0.1:8546
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1141:16) 
+[2021-01-27 02:50:05] [ERROR] [COMMIT-MGR] [uploader]: [WEBSOCKET] "close" event: 1006 
+[2021-01-27 02:50:06] [INFO] [COMMIT-MGR] [uploader]: Mongoose default connection disconnected. 
+[2021-01-27 02:51:00] [INFO] [COMMIT-MGR] [uploader]: infura: Infura's traditional jsonrpc API 
+[2021-01-27 02:51:00] [INFO] [COMMIT-MGR] [uploader]: Starting commmitment manager server... 
+[2021-01-27 02:51:00] [DEBUG] [COMMIT-MGR] [uploader]: Attempting to connect to db: localhost:27017/baseline 
+[2021-01-27 02:51:00] [INFO] [COMMIT-MGR] [uploader]: Successfully connected to mongo db. 
+[2021-01-27 02:51:05] [INFO] [COMMIT-MGR] [uploader]: Established websocket connection: undefined 
+[2021-01-27 02:51:05] [ERROR] [COMMIT-MGR] [uploader]: [WEBSOCKET] "error" event: Error: connect ECONNREFUSED 127.0.0.1:8546
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1141:16) 
+[2021-01-27 02:51:05] [ERROR] [COMMIT-MGR] [uploader]: [WEBSOCKET] "close" event: 1006 
+[2021-01-27 02:51:05] [INFO] [COMMIT-MGR] [uploader]: Established websocket connection: undefined 
+[2021-01-27 02:51:06] [INFO] [COMMIT-MGR] [uploader]: REST server listening on port 4001. 
+[2021-01-27 02:51:06] [ERROR] [COMMIT-MGR] [uploader]: [WEBSOCKET] "error" event: Error: connect ECONNREFUSED 127.0.0.1:8546
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1141:16) 
+[2021-01-27 02:51:06] [ERROR] [COMMIT-MGR] [uploader]: [WEBSOCKET] "close" event: 1006 
+[2021-01-27 02:51:08] [INFO] [COMMIT-MGR] [uploader]: Mongoose default connection disconnected. 
+[2021-01-27 02:52:59] [INFO] [COMMIT-MGR] [uploader]: infura: Infura's traditional jsonrpc API 
+[2021-01-27 02:52:59] [INFO] [COMMIT-MGR] [uploader]: Starting commmitment manager server... 
+[2021-01-27 02:52:59] [DEBUG] [COMMIT-MGR] [uploader]: Attempting to connect to db: localhost:27017/baseline 
+[2021-01-27 02:52:59] [INFO] [COMMIT-MGR] [uploader]: Successfully connected to mongo db. 
+[2021-01-27 02:53:04] [INFO] [COMMIT-MGR] [uploader]: infura: Infura's traditional jsonrpc API 
+[2021-01-27 02:53:04] [INFO] [COMMIT-MGR] [uploader]: infura: Infura's traditional jsonrpc API 
+[2021-01-27 02:53:04] [INFO] [COMMIT-MGR] [uploader]: Established websocket connection: undefined 
+[2021-01-27 02:53:05] [ERROR] [COMMIT-MGR] [uploader]: [WEBSOCKET] "error" event: Error: connect ECONNREFUSED 127.0.0.1:8546
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1141:16) 
+[2021-01-27 02:53:05] [ERROR] [COMMIT-MGR] [uploader]: [WEBSOCKET] "close" event: 1006 
+[2021-01-27 02:53:05] [INFO] [COMMIT-MGR] [uploader]: infura: Infura's traditional jsonrpc API 
+[2021-01-27 02:53:05] [INFO] [COMMIT-MGR] [uploader]: infura: Infura's traditional jsonrpc API 
+[2021-01-27 02:53:05] [INFO] [COMMIT-MGR] [uploader]: Established websocket connection: undefined 
+[2021-01-27 02:53:05] [INFO] [COMMIT-MGR] [uploader]: REST server listening on port 4001. 
+[2021-01-27 02:53:05] [ERROR] [COMMIT-MGR] [uploader]: [WEBSOCKET] "error" event: Error: connect ECONNREFUSED 127.0.0.1:8546
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1141:16) 
+[2021-01-27 02:53:05] [ERROR] [COMMIT-MGR] [uploader]: [WEBSOCKET] "close" event: 1006 
+[2021-01-27 02:53:07] [INFO] [COMMIT-MGR] [uploader]: Mongoose default connection disconnected. 
+[2021-01-27 02:58:01] [INFO] [COMMIT-MGR] [uploader]: infura: Infura's traditional jsonrpc API 
+[2021-01-27 02:58:01] [INFO] [COMMIT-MGR] [uploader]: Starting commmitment manager server... 
+[2021-01-27 02:58:01] [DEBUG] [COMMIT-MGR] [uploader]: Attempting to connect to db: localhost:27017/baseline 
+[2021-01-27 02:58:01] [INFO] [COMMIT-MGR] [uploader]: Successfully connected to mongo db. 
+[2021-01-27 02:58:06] [INFO] [COMMIT-MGR] [uploader]: Established websocket connection: wss://goerli.infura.io/ws/v3/655f1ad19d494a9fbbac8944c60c5ef8 
+[2021-01-27 02:58:06] [INFO] [COMMIT-MGR] [uploader]: REST server listening on port 4001. 
+[2021-01-27 02:58:11] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181621 
+[2021-01-27 02:58:32] [INFO] [COMMIT-MGR] [uploader]: infura: Infura's traditional jsonrpc API 
+[2021-01-27 02:58:32] [INFO] [COMMIT-MGR] [uploader]: Starting commmitment manager server... 
+[2021-01-27 02:58:32] [DEBUG] [COMMIT-MGR] [uploader]: Attempting to connect to db: localhost:27017/baseline 
+[2021-01-27 02:58:32] [INFO] [COMMIT-MGR] [uploader]: Successfully connected to mongo db. 
+[2021-01-27 02:58:37] [INFO] [COMMIT-MGR] [uploader]: Established websocket connection: wss://goerli.infura.io/ws/v3/655f1ad19d494a9fbbac8944c60c5ef8 
+[2021-01-27 02:58:37] [INFO] [COMMIT-MGR] [uploader]: REST server listening on port 4001. 
+[2021-01-27 02:58:42] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181623 
+[2021-01-27 02:58:57] [DEBUG] [COMMIT-MGR] [uploader]: NEW BLOCK: 4181624 
+[2021-01-27 02:59:14] [INFO] [COMMIT-MGR] [uploader]: infura: Infura's traditional jsonrpc API 
+[2021-01-27 02:59:14] [INFO] [COMMIT-MGR] [uploader]: Starting commmitment manager server... 
+[2021-01-27 02:59:14] [DEBUG] [COMMIT-MGR] [uploader]: Attempting to connect to db: localhost:27017/baseline 
+[2021-01-27 02:59:14] [INFO] [COMMIT-MGR] [uploader]: Successfully connected to mongo db. 
+[2021-01-27 02:59:19] [INFO] [COMMIT-MGR] [uploader]: infura: Infura's traditional jsonrpc API 
+[2021-01-27 02:59:19] [INFO] [COMMIT-MGR] [uploader]: infura: Infura's traditional jsonrpc API 
+[2021-01-27 02:59:19] [ERROR] [COMMIT-MGR] [uploader]: [WEBSOCKET] Cannot establish connection: ws://localhost:655f1ad19d494a9fbbac8944c60c5ef8 
+[2021-01-27 02:59:19] [INFO] [COMMIT-MGR] [uploader]: infura: Infura's traditional jsonrpc API 
+[2021-01-27 02:59:19] [INFO] [COMMIT-MGR] [uploader]: infura: Infura's traditional jsonrpc API 
+[2021-01-27 02:59:19] [ERROR] [COMMIT-MGR] [uploader]: [WEBSOCKET] Cannot establish connection: ws://localhost:655f1ad19d494a9fbbac8944c60c5ef8 
+[2021-01-27 02:59:27] [INFO] [COMMIT-MGR] [uploader]: Mongoose default connection disconnected. 

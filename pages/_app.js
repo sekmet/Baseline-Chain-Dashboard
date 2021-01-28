@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import App from "next/app";
 import Head from "next/head";
 import Router from "next/router";
-
+import { UseWalletProvider } from 'use-wallet'
 import PageChange from "components/PageChange/PageChange.js";
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -72,9 +72,17 @@ export default class MyApp extends App {
           />
           <title>Baseline Dashboard</title>
         </Head>
+        <UseWalletProvider
+          chainId={5}
+          connectors={{
+            // This is how connectors get configured
+            portis: { dAppId: 'baseline-dashboard-id-1-0' },
+          }}
+        >
         <Layout>
           <Component {...pageProps} />
         </Layout>
+        </UseWalletProvider>
       </React.Fragment>
     );
   }

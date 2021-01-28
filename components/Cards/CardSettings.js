@@ -1,26 +1,71 @@
 import React from "react";
 
 // components
+/*
 
+# Set to production when deploying to production
+NODE_ENV="development"
+LOG_LEVEL="debug"
+
+# Node.js server configuration
+SERVER_PORT=4001
+
+# MongoDB configuration for the JS client
+DATABASE_USER="ether"
+DATABASE_PASSWORD="success2021"
+DATABASE_HOST="localhost:27017"
+DATABASE_NAME="baseline"
+
+# Ethereum client
+# "ganache": local, private ganache network
+# "besu": local, private besu network
+# "infura-gas": Infura's Managed Transaction (ITX) service
+# "infura": Infura's traditional jsonrpc API
+ETH_CLIENT_TYPE="infura"
+
+# Infura key
+INFURA_ID="655f1ad19d494a9fbbac8944c60c5ef8"
+
+# Local client endpoints
+# Websocket port
+# 8545: ganache
+# 8546: besu
+ETH_CLIENT_WS="wss://goerli.infura.io/ws/v3/655f1ad19d494a9fbbac8944c60c5ef8"
+ETH_CLIENT_HTTP="https://goerli.infura.io/v3/655f1ad19d494a9fbbac8944c60c5ef8"
+
+# Chain ID
+# 1: Mainnet
+# 3: Ropsten
+# 4: Rinkeby
+# 5: Goerli
+# 42: Kovan
+# 101010: Custom network (private ganache or besu network)
+CHAIN_ID=5 
+
+# Ethereum account key-pair. Do not use in production
+WALLET_PRIVATE_KEY="0x7e6eb3918c9a323a653c2926508e4d870def6cf0b86f74ab0a0ad8de451eae35"
+WALLET_PUBLIC_KEY="0x122278A06753D5af91383848B13CF136F9C6f721"
+
+*/
 export default function CardSettings() {
   return (
     <>
       <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-200 border-0">
         <div className="rounded-t bg-white mb-0 px-6 py-6">
           <div className="text-center flex justify-between">
-            <h6 className="text-gray-800 text-xl font-bold">My account</h6>
+            <h6 className="text-gray-800 text-xl font-bold">Baseline Commit-mgr</h6>
             <button
-              className="bg-gray-800 active:bg-gray-700 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+              className="bg-gray-800 active:bg-green-700 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
               type="button"
             >
-              Settings
+              Save Settings
             </button>
           </div>
         </div>
         <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
           <form>
             <h6 className="text-gray-500 text-sm mt-3 mb-6 font-bold uppercase">
-              User Information
+              Database Information
             </h6>
             <div className="flex flex-wrap">
               <div className="w-full lg:w-6/12 px-4">
@@ -29,12 +74,12 @@ export default function CardSettings() {
                     className="block uppercase text-gray-700 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    Username
+                    DATABASE_USER
                   </label>
                   <input
                     type="text"
                     className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
-                    defaultValue="lucky.jesse"
+                    defaultValue="admin"
                   />
                 </div>
               </div>
@@ -44,12 +89,12 @@ export default function CardSettings() {
                     className="block uppercase text-gray-700 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    Email address
+                    DATABASE_PASSWORD
                   </label>
                   <input
-                    type="email"
+                    type="password"
                     className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
-                    defaultValue="jesse@example.com"
+                    defaultValue="password123"
                   />
                 </div>
               </div>
@@ -59,12 +104,12 @@ export default function CardSettings() {
                     className="block uppercase text-gray-700 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    First Name
+                    DATABASE_HOST
                   </label>
                   <input
                     type="text"
                     className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
-                    defaultValue="Lucky"
+                    defaultValue="localhost:27117"
                   />
                 </div>
               </div>
@@ -74,12 +119,12 @@ export default function CardSettings() {
                     className="block uppercase text-gray-700 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    Last Name
+                    DATABASE_NAME
                   </label>
                   <input
                     type="text"
                     className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
-                    defaultValue="Jesse"
+                    defaultValue="baseline"
                   />
                 </div>
               </div>
@@ -88,7 +133,7 @@ export default function CardSettings() {
             <hr className="mt-6 border-b-1 border-gray-400" />
 
             <h6 className="text-gray-500 text-sm mt-3 mb-6 font-bold uppercase">
-              Contact Information
+              Ethereum Client Information
             </h6>
             <div className="flex flex-wrap">
               <div className="w-full lg:w-12/12 px-4">
@@ -97,75 +142,75 @@ export default function CardSettings() {
                     className="block uppercase text-gray-700 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    Address
+                    ETH_CLIENT_TYPE
                   </label>
                   <input
                     type="text"
                     className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
-                    defaultValue="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
+                    defaultValue="besu"
                   />
                 </div>
               </div>
-              <div className="w-full lg:w-4/12 px-4">
+              <div className="w-full lg:w-12/12 px-4">
                 <div className="relative w-full mb-3">
                   <label
                     className="block uppercase text-gray-700 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    City
+                    CHAIN_ID
                   </label>
                   <input
-                    type="email"
+                    type="number"
                     className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
-                    defaultValue="New York"
+                    defaultValue="101010"
                   />
                 </div>
-              </div>
-              <div className="w-full lg:w-4/12 px-4">
-                <div className="relative w-full mb-3">
-                  <label
-                    className="block uppercase text-gray-700 text-xs font-bold mb-2"
-                    htmlFor="grid-password"
-                  >
-                    Country
-                  </label>
-                  <input
-                    type="text"
-                    className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
-                    defaultValue="United States"
-                  />
-                </div>
-              </div>
-              <div className="w-full lg:w-4/12 px-4">
-                <div className="relative w-full mb-3">
-                  <label
-                    className="block uppercase text-gray-700 text-xs font-bold mb-2"
-                    htmlFor="grid-password"
-                  >
-                    Postal Code
-                  </label>
-                  <input
-                    type="text"
-                    className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
-                    defaultValue="Postal Code"
-                  />
-                </div>
-              </div>
+              </div>            
             </div>
 
             <hr className="mt-6 border-b-1 border-gray-400" />
 
             <h6 className="text-gray-500 text-sm mt-3 mb-6 font-bold uppercase">
-              About Me
+              Wallet / DID Identity
             </h6>
             <div className="flex flex-wrap">
+            <div className="w-full lg:w-12/12 px-4">
+                <div className="relative w-full mb-3">
+                  <label
+                    className="block uppercase text-gray-700 text-xs font-bold mb-2"
+                    htmlFor="grid-password"
+                  >
+                    WALLET_PRIVATE_KEY
+                  </label>
+                  <input
+                    type="text"
+                    className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
+                    defaultValue="0xae6ae8e5ccbfb04590405997ee2d52d2b330726137b875053c36d94e974d162f"
+                  />
+                </div>
+              </div>
               <div className="w-full lg:w-12/12 px-4">
                 <div className="relative w-full mb-3">
                   <label
                     className="block uppercase text-gray-700 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    About me
+                    WALLET_PUBLIC_KEY
+                  </label>
+                  <input
+                    type="text"
+                    className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
+                    defaultValue="0xf17f52151EbEF6C7334FAD080c5704D77216b732"
+                  />
+                </div>
+              </div>
+              <div className="w-full lg:w-12/12 px-4">
+                <div className="relative w-full mb-3">
+                  <label
+                    className="block uppercase text-gray-700 text-xs font-bold mb-2"
+                    htmlFor="grid-password"
+                  >
+                    DID Identity
                   </label>
                   <textarea
                     type="text"
