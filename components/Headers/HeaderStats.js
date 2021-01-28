@@ -15,37 +15,37 @@ export default function HeaderStats() {
             <div className="flex flex-wrap">
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                 <CardStats
-                  statSubtitle="TRAFFIC"
+                  statSubtitle="LATEST BLOCK"
                   statTitle="350,897"
                   statArrow="up"
                   statPercent="3.48"
                   statPercentColor="text-green-500"
                   statDescripiron="Since last month"
-                  statIconName="far fa-chart-bar"
+                  statIconName="fa fa-th"
                   statIconColor="bg-red-500"
                 />
               </div>
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                 <CardStats
-                  statSubtitle="NEW USERS"
+                  statSubtitle="WORKGROUPS"
                   statTitle="2,356"
                   statArrow="down"
                   statPercent="3.48"
                   statPercentColor="text-red-500"
                   statDescripiron="Since last week"
-                  statIconName="fas fa-chart-pie"
+                  statIconName="fas fa-users"
                   statIconColor="bg-orange-500"
                 />
               </div>
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                 <CardStats
-                  statSubtitle="SALES"
+                  statSubtitle="COMMITMENTS"
                   statTitle="924"
                   statArrow="down"
                   statPercent="1.10"
                   statPercentColor="text-orange-500"
                   statDescripiron="Since yesterday"
-                  statIconName="fas fa-users"
+                  statIconName="fa fa-cubes"
                   statIconColor="bg-pink-500"
                 />
               </div>

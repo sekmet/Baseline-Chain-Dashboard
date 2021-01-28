@@ -1,8 +1,8 @@
 import React from "react";
+import { useWallet } from 'use-wallet';
 
 // components
 /*
-
 # Set to production when deploying to production
 NODE_ENV="development"
 LOG_LEVEL="debug"
@@ -48,12 +48,15 @@ WALLET_PUBLIC_KEY="0x122278A06753D5af91383848B13CF136F9C6f721"
 
 */
 export default function CardSettings() {
+
+  const wallet = useWallet();
+
   return (
     <>
       <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-200 border-0">
         <div className="rounded-t bg-white mb-0 px-6 py-6">
           <div className="text-center flex justify-between">
-            <h6 className="text-gray-800 text-xl font-bold">Baseline Commit-mgr</h6>
+            <h6 className="text-gray-800 text-xl font-bold">Baseline Commmitment Manager Settings</h6>
             <button
               className="bg-gray-800 active:bg-green-700 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
               type="button"
@@ -74,7 +77,7 @@ export default function CardSettings() {
                     className="block uppercase text-gray-700 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    DATABASE_USER
+                    DATABASE USER
                   </label>
                   <input
                     type="text"
@@ -89,7 +92,7 @@ export default function CardSettings() {
                     className="block uppercase text-gray-700 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    DATABASE_PASSWORD
+                    DATABASE PASSWORD
                   </label>
                   <input
                     type="password"
@@ -104,7 +107,7 @@ export default function CardSettings() {
                     className="block uppercase text-gray-700 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    DATABASE_HOST
+                    DATABASE HOST
                   </label>
                   <input
                     type="text"
@@ -119,7 +122,7 @@ export default function CardSettings() {
                     className="block uppercase text-gray-700 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    DATABASE_NAME
+                    DATABASE NAME
                   </label>
                   <input
                     type="text"
@@ -142,13 +145,14 @@ export default function CardSettings() {
                     className="block uppercase text-gray-700 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    ETH_CLIENT_TYPE
+                    ETHEREUM CLIENT TYPE
                   </label>
-                  <input
-                    type="text"
-                    className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
-                    defaultValue="besu"
-                  />
+                  <select className="form-select block px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150">
+                    <option defaultValue="infura">Infura</option>
+                    <option value="infura-gas">Infura-Gas</option>
+                    <option value="besu">Besu</option>
+                    <option value="ganache">Ganache</option>
+                  </select>
                 </div>
               </div>
               <div className="w-full lg:w-12/12 px-4">
@@ -157,15 +161,32 @@ export default function CardSettings() {
                     className="block uppercase text-gray-700 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    CHAIN_ID
+                    CHAIN ID
+                  </label>
+                  <select className="form-select block px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150">
+                    <option value="1">Mainnet (1)</option>
+                    <option value="3">Ropsten (3)</option>
+                    <option value="5">Goerli (5)</option>
+                    <option value="42">Kovan (42)</option>
+                    <option value="101010">Ganache or Besu (101010)</option>
+                  </select>
+                </div>
+              </div>
+              {/*<div className="w-full lg:w-2/12 px-4">
+                <div className="relative w-full mb-3">
+                  <label
+                    className="block uppercase text-gray-700 text-xs font-bold mb-2"
+                    htmlFor="grid-password"
+                  >
+                    CHAIN ID
                   </label>
                   <input
                     type="number"
                     className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
-                    defaultValue="101010"
+                    defaultValue={wallet.chainId}
                   />
                 </div>
-              </div>            
+            </div>*/}          
             </div>
 
             <hr className="mt-6 border-b-1 border-gray-400" />
@@ -180,7 +201,7 @@ export default function CardSettings() {
                     className="block uppercase text-gray-700 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    WALLET_PRIVATE_KEY
+                    WALLET PRIVATE KEY
                   </label>
                   <input
                     type="text"
@@ -195,7 +216,7 @@ export default function CardSettings() {
                     className="block uppercase text-gray-700 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    WALLET_PUBLIC_KEY
+                    WALLET PUBLIC KEY
                   </label>
                   <input
                     type="text"
