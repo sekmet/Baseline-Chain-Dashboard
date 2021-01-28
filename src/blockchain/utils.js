@@ -3,7 +3,6 @@ import axios from 'axios';
 import { ethers } from 'ethers';
 
 import { logger } from "../logger";
-import { getEthClientInfo } from "./chain";
 import { insertLeaf } from "../merkle-tree/leaves";
 import { merkleTrees } from "../db/models/MerkleTree";
 import { shieldContract } from "./shield-contract";

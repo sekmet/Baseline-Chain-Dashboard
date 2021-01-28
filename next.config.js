@@ -18,6 +18,14 @@ module.exports = withFonts(
             },
           });
           config.resolve.modules.push(path.resolve("./"));
+
+          // Fixes npm packages that depend on `fs` module
+          if (!options.isServer) {
+            config.node = {
+              fs: 'empty'
+            }
+          }
+
           return config;
         },
       })

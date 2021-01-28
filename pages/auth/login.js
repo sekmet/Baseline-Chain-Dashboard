@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from 'next/router'
 
 // layout for page
-
 import Auth from "layouts/Auth.js";
 
 export default function Login() {
@@ -90,6 +89,7 @@ export default function Login() {
                   </div>
                 )}
                 <hr className="mt-6 border-b-1 border-gray-400" />
+                <h6 className="text-center mt-3"><strong>Network: </strong>{wallet.networkName}</h6>
               </div>
             </div>
           </div>
