@@ -50,7 +50,7 @@ export default function CardContracts() {
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
                   <a href="https://goerli.etherscan.io/address/0x63758bc241d4cd924ebfbed273a2f6a1179f8f86" target="_blank" className="text-black hover:text-green-500 font-semibold">
                       0x63758bc241d4cd924ebfbed273a2f6a1179f8f86
-                      </a>
+                  </a>
                 </td>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
                   2021-01-29
@@ -67,7 +67,7 @@ export default function CardContracts() {
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
                 <a href="https://goerli.etherscan.io/address/0x76f272ba2b1c3887f117dfeeb600e53b50a2207b" target="_blank" className="text-black hover:text-green-500 font-semibold">
                     0x76f272ba2b1c3887f117dfeeb600e53b50a2207b
-                    </a>
+                </a>
                 </td>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
                   2021-01-29

@@ -2,6 +2,11 @@
 ### project to be complete + live demo app in couple hours
 *Video Demo - Soon available*
 
+### Contracts [GOERLI TEST NET]
+[Shield.sol - 0x63758bc241d4cd924ebfbed273a2f6a1179f8f86](https://goerli.etherscan.io/address/0x63758bc241d4cd924ebfbed273a2f6a1179f8f86)
+
+[VerifierNoop.sol - 0x76f272ba2b1c3887f117dfeeb600e53b50a2207b](https://goerli.etherscan.io/address/0x76f272ba2b1c3887f117dfeeb600e53b50a2207b)
+
 # Changelog
 
 ## Alpha Release [0.1.0] 2021-01-28
