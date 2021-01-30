@@ -17,6 +17,12 @@ module.exports = withFonts(
               loader: "url-loader",
             },
           });
+          config.module.rules.push({
+          test: /\.(html)$/,
+            use: {
+              loader: 'html-loader',
+            },
+          });
           config.resolve.modules.push(path.resolve("./"));
 
           // Fixes npm packages that depend on `fs` module

@@ -54,7 +54,7 @@ export default function Sidebar() {
                 <div className="w-6/12">
                   <Link href="/">
                     <a
-                      href="#pablo"
+                      href="#dashboard"
                       className="md:block text-left md:pb-2 text-gray-700 mr-0 inline-block whitespace-no-wrap text-sm uppercase font-bold p-4 px-0"
                     >
                       Baseline Dashboard
@@ -81,12 +81,12 @@ export default function Sidebar() {
 
             <ul className="md:flex-col md:min-w-full flex flex-col list-none">
               <li className="items-center">
-                <Link href="/admin/dashboard">
+                <Link href="/">
                   <a
-                    href="#pablo"
+                    href="#dashboard"
                     className={
                       "text-xs uppercase py-3 font-bold block " +
-                      (router.pathname.indexOf("/admin/dashboard") !== -1
+                      (router.pathname.indexOf("/") !== -1
                         ? "text-blue-500 hover:text-blue-600"
                         : "text-gray-800 hover:text-gray-600")
                     }
@@ -94,7 +94,7 @@ export default function Sidebar() {
                     <i
                       className={
                         "fas fa-tv mr-2 text-sm " +
-                        (router.pathname.indexOf("/admin/dashboard") !== -1
+                        (router.pathname.indexOf("/") !== -1
                           ? "opacity-75"
                           : "text-gray-400")
                       }
@@ -105,9 +105,58 @@ export default function Sidebar() {
               </li>
 
               <li className="items-center">
+                <Link href="/admin/phonebook">
+                  <a
+                    href="#phonebook"
+                    className={
+                      "text-xs uppercase py-3 font-bold block " +
+                      (router.pathname.indexOf("/admin/phonebook") !== -1
+                        ? "text-blue-500 hover:text-blue-600"
+                        : "text-gray-800 hover:text-gray-600")
+                    }
+                  >
+                    <i
+                      className={
+                        "fas fa-phone mr-2 text-sm " +
+                        (router.pathname.indexOf("/admin/phonebook") !== -1
+                          ? "opacity-75"
+                          : "text-gray-400")
+                      }
+                    ></i>{" "}
+                    Baseline Phonebook
+                  </a>
+                </Link>
+              </li>
+
+
+              <li className="items-center">
+                <Link href="/admin/didgenerator">
+                  <a
+                    href="#didgenerator"
+                    className={
+                      "text-xs uppercase py-3 font-bold block " +
+                      (router.pathname.indexOf("/admin/didgenerator") !== -1
+                        ? "text-blue-500 hover:text-blue-600"
+                        : "text-gray-800 hover:text-gray-600")
+                    }
+                  >
+                    <i
+                      className={
+                        "fas fa-id-card mr-2 text-sm " +
+                        (router.pathname.indexOf("/admin/didgenerator") !== -1
+                          ? "opacity-75"
+                          : "text-gray-400")
+                      }
+                    ></i>{" "}
+                    DID Generator
+                  </a>
+                </Link>
+              </li>
+
+              <li className="items-center">
                 <Link href="/admin/settings">
                   <a
-                    href="#pablo"
+                    href="#settings"
                     className={
                       "text-xs uppercase py-3 font-bold block " +
                       (router.pathname.indexOf("/admin/settings") !== -1
@@ -139,7 +188,7 @@ export default function Sidebar() {
                       <img
                         alt="..."
                         className="w-5 mr-1"
-                        src={require("assets/img/github.svg")}
+                        src={require("assets/img/logoff.svg")}
                       />
                       Disconnect
                     </button>

@@ -3,8 +3,7 @@ import { useWallet } from 'use-wallet';
 import { createPopper } from "@popperjs/core";
 //import walletAvatar from "../Utils/Avatar";
 
-const UserDropdown = () => {
-  const wallet = useWallet();
+const UserDropdown = (props) => {  
   // dropdown props
   const [dropdownPopoverShow, setDropdownPopoverShow] = React.useState(false);
   const btnDropdownRef = React.createRef();
@@ -18,9 +17,8 @@ const UserDropdown = () => {
   const closeDropdownPopover = () => {
     setDropdownPopoverShow(false);
   };
-
+  const wallet = useWallet();
   //const addressAvatar = walletAvatar(wallet.account, "https://goerli.infura.io/v3/655f1ad19d494a9fbbac8944c60c5ef8")
-
   return (
     <>
       <a

@@ -1,10 +1,28 @@
 import React from "react";
+import useSwr from 'swr';
+//import { useWallet } from 'use-wallet';
 
 // components
-
 import CardStats from "components/Cards/CardStats.js";
 
+const fetcherStatus = (url) => {
+  return fetch(url, {
+   headers: {
+    /*Authorization: `Bearer ${localStorage.getItem('token')}`,*/
+    'Content-Type': 'application/text',
+   },
+  }).then((res) => { 
+    let result = res.statusText;
+    return result;
+    })};
+
+  //const fetcher = (url) => fetch(url).then((res) => res);
+
 export default function HeaderStats() {
+
+  //const wallet = useWallet();
+  const { data, error } = useSwr('http://api.baseline.test/status', fetcherStatus);
+
   return (
     <>
       {/* Header */}
@@ -16,7 +34,7 @@ export default function HeaderStats() {
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                 <CardStats
                   statSubtitle="LATEST BLOCK"
-                  statTitle="350,897"
+                  statTitle={'9563269'}
                   statArrow="up"
                   statPercent="3.48"
                   statPercentColor="text-green-500"
@@ -46,19 +64,21 @@ export default function HeaderStats() {
                   statPercentColor="text-orange-500"
                   statDescripiron="Since yesterday"
                   statIconName="fa fa-cubes"
-                  statIconColor="bg-pink-500"
+                  statIconColor="bg-blue-500"
                 />
               </div>
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
+                {error ? <div>Failed to load status</div> : ''}
+                {!data ? <div>Loading...</div> : ''}
                 <CardStats
-                  statSubtitle="PERFORMANCE"
-                  statTitle="49,65%"
+                  statSubtitle="STATUS"
+                  statTitle={data}
                   statArrow="up"
-                  statPercent="12"
+                  statPercent="UP"
                   statPercentColor="text-green-500"
-                  statDescripiron="Since last month"
-                  statIconName="fas fa-percent"
-                  statIconColor="bg-blue-500"
+                  statDescripiron="Baseline commit-mgr status"
+                  statIconName="fas fa-check"
+                  statIconColor="bg-green-500"
                 />
               </div>
             </div>
