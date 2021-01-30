@@ -131,7 +131,6 @@ CHAIN_ID=${settings.CHAIN_ID}
 WALLET_PRIVATE_KEY="${settings.WALLET_PRIVATE_KEY}"
 WALLET_PUBLIC_KEY="${settings.WALLET_PUBLIC_KEY}"
 `);
-        res.setHeader('Cache-Control', 's-maxage=0, stale-while-revalidate');
         res.sendStatus(200);
     }));
     // api for get data from database

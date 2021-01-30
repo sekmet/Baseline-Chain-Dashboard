@@ -1,6 +1,6 @@
 
 /* eslint-disable no-alert, no-console, react/no-find-dom-node */
-import React from 'react';
+import React, { useEffect }  from "react";
 import '../../assets/styles/tree.css';
 import '.../../assets/styles/tree-basic.css';
 import Tree, { TreeNode } from 'rc-tree';
@@ -103,6 +103,7 @@ class TreeData extends React.Component {
     return (
       <div style={{ margin: '0 11px' }} className="mb-6">
         <Tree
+          ref={this.setTreeRef}
           className="myCls"
           showLine
           checkable

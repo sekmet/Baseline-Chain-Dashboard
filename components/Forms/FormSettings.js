@@ -6,34 +6,34 @@ const get_chain_id_info = (chainId) => {
   /* # Chain ID */
   let result;
 
-  switch (chainId) {
+  switch (parseInt(chainId)) {
      /* # 1: Mainnet*/
-    case "1": {
+    case 1: {
       result = { ws_provider: "wss://mainnet.infura.io/ws/v3/", http_provider: "https://mainnet.infura.io/v3/" }
       break;
     }
     /* # 3: Ropsten*/  
-    case "3": {
+    case 3: {
       result = { ws_provider: "wss://ropsten.infura.io/ws/v3/", http_provider: "https://ropsten.infura.io/v3/" }
       break;
     }     
     /* # 4: Rinkeby*/
-    case "4": {
+    case 4: {
       result = { ws_provider: "wss://rinkeby.infura.io/ws/v3/", http_provider: "https://rinkeby.infura.io/v3/" }
       break;
     }
     /* # 5: Goerli*/   
-    case "5": {
+    case 5: {
       result = { ws_provider: "wss://goerli.infura.io/ws/v3/", http_provider: "https://goerli.infura.io/v3/" }
       break;
     }
     /* # 42: Kovan*/  
-    case "42": {
+    case 42: {
       result = { ws_provider: "wss://kovan.infura.io/ws/v3/", http_provider: "https://kovan.infura.io/v3/" }
       break;
     }
     /* # 101010: Custom network (private ganache or besu network)*/           
-    case "101010": {
+    case 101010: {
       result = { ws_provider: "ws://localhost:", http_provider: "http://localhost:" }
       break;
     }
@@ -46,6 +46,8 @@ const getEthClientInfo = (ethClientType, chainId, infuraId) => {
 
   // get chain information to connect
   const chain_info = get_chain_id_info(chainId);
+
+  //console.log("chain_inf  ", chain_info)
 
   let eth_client_ws;
   let eth_client_http;
@@ -110,13 +112,13 @@ export default class FormSettings extends React.Component {
         EthClientType, 
         InfuraId, 
         EthClientWs, 
-        EthClientHttp, 
+        EthClientHttp,
         ChainId, 
         WalletPrivateKey, 
         WalletPublicKey 
         } = props;
         
-        //console.log('PROPS == ', props)
+        console.log('PROPS == ', props)
 
         this.state = {
             NODE_ENV: NodeEnv ? NodeEnv : "development",
@@ -130,7 +132,7 @@ export default class FormSettings extends React.Component {
             INFURA_ID: (EthClientType === "besu" || EthClientType === "ganache") ? "" : InfuraId,
             ETH_CLIENT_WS: EthClientWs ? EthClientWs : "http://localhost:8546",
             ETH_CLIENT_HTTP: EthClientHttp ? EthClientHttp : "http://localhost:8545",
-            CHAIN_ID: (EthClientType === "besu" || EthClientType === "ganache") ? "101010" : ChainId,
+            CHAIN_ID: (EthClientType === "besu" || EthClientType === "ganache") ? 101010 : ChainId,
             WALLET_PRIVATE_KEY: WalletPrivateKey ? WalletPrivateKey : "0xae6ae8e5ccbfb04590405997ee2d52d2b330726137b875053c36d94e974d162f",
             WALLET_PUBLIC_KEY: WalletPublicKey ? WalletPublicKey : "0xf17f52151EbEF6C7334FAD080c5704D77216b732",
             errorLabel: "",
@@ -183,7 +185,7 @@ export default class FormSettings extends React.Component {
             INFURA_ID: INFURA_ID,
             ETH_CLIENT_WS: ws_provider ? ws_provider : ETH_CLIENT_WS,
             ETH_CLIENT_HTTP: http_provider ? http_provider : ETH_CLIENT_HTTP,
-            CHAIN_ID: CHAIN_ID,
+            CHAIN_ID: (ETH_CLIENT_TYPE === 'besu' || ETH_CLIENT_TYPE === 'ganache') ? 101010 : CHAIN_ID,
             WALLET_PRIVATE_KEY: WALLET_PRIVATE_KEY,
             WALLET_PUBLIC_KEY: WALLET_PUBLIC_KEY
             })
@@ -242,6 +244,8 @@ export default class FormSettings extends React.Component {
         } = this.state;
 
         //console.log({...this.state})
+
+        if (!this.state) return false;
 
         return (
             <>
@@ -383,7 +387,7 @@ export default class FormSettings extends React.Component {
                         </label>
                         <select 
                             name="CHAIN_ID" 
-                            value={ETH_CLIENT_TYPE === 'besu' || ETH_CLIENT_TYPE === 'ganache' ? "101010" : CHAIN_ID} 
+                            value={ETH_CLIENT_TYPE === 'besu' || ETH_CLIENT_TYPE === 'ganache' ? 101010 : CHAIN_ID} 
                             disabled={ETH_CLIENT_TYPE === 'besu' || ETH_CLIENT_TYPE === 'ganache' ? 'disabled' : ''}
                             onChange={this.onChange} 
                             className={ETH_CLIENT_TYPE === 'besu' || ETH_CLIENT_TYPE === 'ganache' ? "form-select block px-3 py-3 placeholder-gray-400 text-gray-700 bg-gray-300 rounded shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150" : "form-select block px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"}

@@ -34,7 +34,7 @@ export default function HeaderStats() {
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                 <CardStats
                   statSubtitle="LATEST BLOCK"
-                  statTitle={'9563269'}
+                  statTitle="9563269"
                   statArrow="up"
                   statPercent="3.48"
                   statPercentColor="text-green-500"
@@ -68,15 +68,13 @@ export default function HeaderStats() {
                 />
               </div>
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
-                {error ? <div>Failed to load status</div> : ''}
-                {!data ? <div>Loading...</div> : ''}
                 <CardStats
                   statSubtitle="STATUS"
-                  statTitle={data}
+                  statTitle={!data ? "Loading..." : data}
                   statArrow="up"
                   statPercent="UP"
                   statPercentColor="text-green-500"
-                  statDescripiron="Baseline commit-mgr status"
+                  statDescripiron={error ? "Failed to load status" : "Baseline commit-mgr status"}
                   statIconName="fas fa-check"
                   statIconColor="bg-green-500"
                 />

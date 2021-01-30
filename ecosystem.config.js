@@ -6,10 +6,12 @@ module.exports = {
     // Delay between restart
     watch_delay: 1000,
     ignore_watch : ["node_modules", "logs/*", "out/baseline-commit-mgr-tests-report.html", "public/baseline-commit-mgr-tests-report.html"],
-  }/*, {
-    name: 'ui-dashboard'
-    script: 'serve out/ -p 3000',
-  }*/],
+  }, {
+    name: 'ui-dashboard',
+    script: 'node_modules/next/dist/bin/next',
+    args: 'start',
+    cwd: './'
+  }],
 
   /*deploy : {
     production : {
