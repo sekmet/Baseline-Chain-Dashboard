@@ -45,6 +45,7 @@ beforeAll(async () => {
 
   await mongoose.connect(dbUrl, config.mongoose);
   await mongoose.connection.db.dropCollection('merkle-trees');
+  //await mongoose.connection.db.dropCollection('contract-baselines');
 
   //const waitTx = web3provider.bind(this, waitRelayTx);
   if (txManager === 'infura-gas') {
@@ -120,7 +121,7 @@ describe("Deploy contracts", () => {
 
     const gasEstimate = await wallet.estimateGas(unsignedTx);
     unsignedTx.gasLimit = Math.ceil(Number(gasEstimate) * 1.1);
-
+    console.log(`gasEstimate: ${gasEstimate}`);
     const tx = await wallet.sendTransaction(unsignedTx);
     await tx.wait();
     txHash = tx.hash;
@@ -157,7 +158,7 @@ describe("Deploy contracts", () => {
 
     const gasEstimate = await wallet.estimateGas(unsignedTx);
     unsignedTx.gasLimit = Math.ceil(Number(gasEstimate) * 1.1);
-
+    console.log(`gasEstimate: ${gasEstimate}`);
     const tx = await wallet.sendTransaction(unsignedTx);
     await tx.wait();
     txHash = tx.hash;

@@ -1,7 +1,7 @@
 import React from "react";
 import TreeMerkle from '../Utils/TreeData';
-// components
 
+// components
 export default function CardTree({ title }) {
 
   const treeTitle = title ? title : "[DB] Merkle Tree";
@@ -9,7 +9,7 @@ export default function CardTree({ title }) {
   return (
     <>
       <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded">
-        <div className="rounded-t mb-0 px-3 py-3 border-0">
+        <div className="rounded-t mb-0 px-4 py-4 border-0">
           <div className="flex flex-wrap items-justify">
             <div className="relative w-full px-1 max-w-full flex-grow flex-1">
               <h3 className="font-semibold text-base text-gray-800">
@@ -38,7 +38,7 @@ export default function CardTree({ title }) {
           {/* Projects table */}
           <div className="items-center w-full bg-transparent" style={{ height: "296px"}}>
           <hr className="mb-1 border-b-1 border-gray-400" />
-              <TreeMerkle />
+              {/*<TreeMerkle />*/}
           </div>
         </div>
       </div>

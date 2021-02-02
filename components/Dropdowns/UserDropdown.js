@@ -1,4 +1,5 @@
 import React from "react";
+import { ethers } from "ethers";
 import { useWallet } from 'use-wallet';
 import { createPopper } from "@popperjs/core";
 //import walletAvatar from "../Utils/Avatar";
@@ -33,6 +34,7 @@ const UserDropdown = (props) => {
         <div className="items-center flex">
           <span className="text-sm text-white">
           {wallet.account}<br />
+          <strong>Balance:</strong> {ethers.utils.formatEther(wallet.balance)}<br />
           <strong>Network:</strong> {wallet.networkName}
           </span>
           <span className="w-10 h-10 text-sm text-white bg-gray-300 inline-flex items-center justify-center rounded-full">

@@ -1,5 +1,6 @@
 import React from "react";
-import axios from 'axios';
+import axios from "axios";
+import { Alert } from "../Utils/Alert";
 //import { useWallet } from 'use-wallet';
 
 const get_chain_id_info = (chainId) => {
@@ -117,8 +118,7 @@ export default class FormSettings extends React.Component {
         WalletPrivateKey, 
         WalletPublicKey 
         } = props;
-        
-        console.log('PROPS == ', props)
+    
 
         this.state = {
             NODE_ENV: NodeEnv ? NodeEnv : "development",
@@ -211,7 +211,7 @@ export default class FormSettings extends React.Component {
                     status: payload,
                     errorLabelHidden: true
                 });
-
+                Alert('success', 'Settings saved...', 'Settings saved with success into .env file..');
             })
             .catch((error) => {
                 console.log(error);
@@ -220,6 +220,7 @@ export default class FormSettings extends React.Component {
                     errorLabel: "OOPS that didn't work :(",
                     status: "ERROR"
                 });
+                Alert('error', 'ERROR...', "OOPS that didn't work :(");
             });
     }
 
@@ -263,6 +264,20 @@ export default class FormSettings extends React.Component {
                 </div>
                 </div>
                 <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
+
+
+                </div>
+
+                    <hr className="mt-6 border-b-1 border-gray-400" />
+
+                    <div className="rounded-t bg-white mb-0 px-6 py-6">
+                    <div className="text-center flex justify-between">
+                        <h6 className="text-gray-800 text-xl font-bold">Local Besu / Ganache Settings</h6>
+                    </div>
+                    </div>
+                    
+                    <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
+
                     <h6 className="text-gray-500 text-sm mt-3 mb-6 font-bold uppercase">
                     Database Information
                     </h6>
@@ -337,7 +352,194 @@ export default class FormSettings extends React.Component {
                     </div>
                     </div>
 
+                    <h6 className="text-gray-500 text-sm mt-3 mb-6 font-bold uppercase">
+                    Ethereum Client Information
+                    </h6>
+                    <div className="flex flex-wrap">
+                    <div className="w-full lg:w-6/12 px-4">
+                        <div className="relative w-full mb-3">
+                        <label
+                            className="block uppercase text-gray-700 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                        >
+                            ETHEREUM CLIENT TYPE
+                        </label>
+                        <select name="ETH_CLIENT_TYPE" value={ETH_CLIENT_TYPE} onChange={this.onChange} className="form-select block px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150">
+                            <option value="besu">Besu</option>
+                            <option value="ganache">Ganache</option>
+                        </select>
+                        </div>
+                    </div>
+                    <div className="w-full lg:w-12/12 px-4">
+                        <div className="relative w-full mb-3">
+                        <label
+                            className="block uppercase text-gray-700 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                        >
+                            CHAIN ID
+                        </label>
+                        <select 
+                            name="CHAIN_ID" 
+                            value={ETH_CLIENT_TYPE === 'besu' || ETH_CLIENT_TYPE === 'ganache' ? 101010 : CHAIN_ID}
+                            onChange={this.onChange} 
+                            className={ETH_CLIENT_TYPE === 'besu' || ETH_CLIENT_TYPE === 'ganache' ? "form-select block px-3 py-3 placeholder-gray-400 text-gray-700 bg-gray-300 rounded shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150" : "form-select block px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"}
+                            >
+                            <option value="101010">Ganache or Besu (101010)</option>
+                        </select>
+                        <input
+                            name="ETH_CLIENT_WS" 
+                            type="hidden"
+                            value={ETH_CLIENT_WS}
+                        />
+                        <input
+                            name="ETH_CLIENT_HTTP" 
+                            type="hidden"
+                            value={ETH_CLIENT_WS}
+                        />                        
+                        </div>
+                    </div>
+                    {/*<div className="w-full lg:w-2/12 px-4">
+                        <div className="relative w-full mb-3">
+                        <label
+                            className="block uppercase text-gray-700 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                        >
+                            CHAIN ID
+                        </label>
+                        <input
+                            type="number"
+                            className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
+                            defaultValue={wallet.chainId}
+                        />
+                        </div>
+                    </div>*/}          
+                    </div>
+
+                    <h6 className="text-gray-500 text-sm mt-3 mb-6 font-bold uppercase">
+                    Wallet / DID Identity
+                    </h6>
+                    <div className="flex flex-wrap">
+                    <div className="w-full lg:w-12/12 px-4">
+                        <div className="relative w-full mb-3">
+                        <label
+                            className="block uppercase text-gray-700 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                        >
+                            WALLET PRIVATE KEY
+                        </label>
+                        <input
+                            name="WALLET_PRIVATE_KEY" 
+                            value={WALLET_PRIVATE_KEY} 
+                            onChange={this.onChange}
+                            type="text"
+                            className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
+                        />
+                        </div>
+                    </div>
+                    <div className="w-full lg:w-12/12 px-4">
+                        <div className="relative w-full mb-3">
+                        <label
+                            className="block uppercase text-gray-700 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                        >
+                            WALLET PUBLIC KEY
+                        </label>
+                        <input
+                            name="WALLET_PUBLIC_KEY" 
+                            value={WALLET_PUBLIC_KEY} 
+                            onChange={this.onChange}
+                            type="text"
+                            className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
+                        />
+                        </div>
+                    </div>
+                    </div>
+
+                    </div>
+                    
                     <hr className="mt-6 border-b-1 border-gray-400" />
+
+                    <div className="rounded-t bg-white mb-0 px-6 py-6">
+                    <div className="text-center flex justify-between">
+                        <h6 className="text-gray-800 text-xl font-bold">Mainnet/Testnet Settings</h6>
+                    </div>
+                    </div>
+                    
+                    <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
+
+                    <h6 className="text-gray-500 text-sm mt-3 mb-6 font-bold uppercase">
+                    Database Information
+                    </h6>
+                    <div className="flex flex-wrap">
+                    <div className="w-full lg:w-6/12 px-4">
+                        <div className="relative w-full mb-3">
+                        <label
+                            className="block uppercase text-gray-700 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                        >
+                            DATABASE USER
+                        </label>
+                        <input
+                            type="text"
+                            name="DATABASE_USER"
+                            value={DATABASE_USER} 
+                            onChange={this.onChange}
+                            className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
+                        />
+                        </div>
+                    </div>
+                    <div className="w-full lg:w-6/12 px-4">
+                        <div className="relative w-full mb-3">
+                        <label
+                            className="block uppercase text-gray-700 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                        >
+                            DATABASE PASSWORD
+                        </label>
+                        <input
+                            name="DATABASE_PASSWORD"
+                            value={DATABASE_PASSWORD} 
+                            onChange={this.onChange}                        
+                            type="password"
+                            className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
+                        />
+                        </div>
+                    </div>
+                    <div className="w-full lg:w-6/12 px-4">
+                        <div className="relative w-full mb-3">
+                        <label
+                            className="block uppercase text-gray-700 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                        >
+                            DATABASE HOST
+                        </label>
+                        <input
+                            name="DATABASE_HOST"
+                            value={DATABASE_HOST} 
+                            onChange={this.onChange}                        
+                            type="text"
+                            className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
+                        />
+                        </div>
+                    </div>
+                    <div className="w-full lg:w-6/12 px-4">
+                        <div className="relative w-full mb-3">
+                        <label
+                            className="block uppercase text-gray-700 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                        >
+                            DATABASE NAME
+                        </label>
+                        <input
+                            name="DATABASE_NAME"
+                            value={DATABASE_NAME} 
+                            onChange={this.onChange}                        
+                            type="text"
+                            className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
+                        />
+                        </div>
+                    </div>
+                    </div>
 
                     <h6 className="text-gray-500 text-sm mt-3 mb-6 font-bold uppercase">
                     Ethereum Client Information
@@ -427,8 +629,6 @@ export default class FormSettings extends React.Component {
                     </div>*/}          
                     </div>
 
-                    <hr className="mt-6 border-b-1 border-gray-400" />
-
                     <h6 className="text-gray-500 text-sm mt-3 mb-6 font-bold uppercase">
                     Wallet / DID Identity
                     </h6>
@@ -484,7 +684,8 @@ export default class FormSettings extends React.Component {
                         </div>
                     </div>
                     </div>
-                </div>
+
+                    </div>
                 </form>
             </div>
             </>

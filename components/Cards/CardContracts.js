@@ -1,7 +1,9 @@
 import React from "react";
+import axios from "axios";
+import { Alert } from "../Utils/Alert";
+
 
 // components
-
 export default function CardContracts({ title }) {
 
   const contractsTitle = title ? title : "Contracts";

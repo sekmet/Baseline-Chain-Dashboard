@@ -1,16 +1,20 @@
 module.exports = {
   apps : [{
     name: 'commit-mgr',
-    script: 'dist/index.js',
+    script: 'dist/src/index.js',
     watch: ["."],
     // Delay between restart
     watch_delay: 1000,
-    ignore_watch : ["node_modules", "logs/*", "out/baseline-commit-mgr-tests-report.html", "public/baseline-commit-mgr-tests-report.html"],
-  }, {
+    ignore_watch : ["dist/node_modules", "dist/logs/*", "dist/out", "dist/public", "did"],
+  },{
     name: 'ui-dashboard',
     script: 'node_modules/next/dist/bin/next',
     args: 'start',
-    cwd: './'
+    cwd: './',
+  },{
+    name: 'did-server',
+    script: 'did/build/index.js',
+    args: 'daf server',
   }],
 
   /*deploy : {

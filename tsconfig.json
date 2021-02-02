@@ -26,9 +26,11 @@
     "jsx": "preserve"
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "artifacts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "did"
   ]
 }

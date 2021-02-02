@@ -2,19 +2,26 @@ import dotenv from "dotenv";
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-
+import { ethers } from "ethers";
 import { rpcServer } from "./rpc-server";
 import { logger, reqLogger, reqErrorLogger } from "./logger";
 import { dbConnect } from "./db";
 import { merkleTrees } from "./db/models/MerkleTree";
-import { get_ws_provider, restartSubscriptions } from "./blockchain";
+import { contractBaseline } from "./db/models/Contract";
+import { execShellTest, didIdentityManagerCreateIdentity, didGenerateDidConfiguration, didVerifyWellKnownDidConfiguration } from "./blockchain/did";
+import { get_ws_provider, restartSubscriptions, deployContracts } from "./blockchain";
 
 import * as fs from 'fs';
 import * as path from 'path';
 
-const saveEnv = async (settings) => {
+import { web3provider, wallet, txManager, waitRelayTx, deposit, getBalance } from "./blockchain/chain";
 
-  fs.writeFile(path.join(__dirname, "../.env"), settings,  (err) => {
+import * as shieldContract from "../artifacts/Shield.json";
+import * as verifierContract from "../artifacts/VerifierNoop.json";
+
+const saveEnv = async (settings: any) => {
+
+  fs.writeFile(path.join(__dirname, "../../.env"), settings,  (err) => {
     if (err) {
         return logger.error(err);
     }
@@ -23,11 +30,89 @@ const saveEnv = async (settings) => {
 
 }
 
+const saveContract = async (contractInfo: any) => {
+
+  if (!contractInfo) {
+    logger.error("No contract to save...");
+    return false;
+  }
+
+  const newContract = new contractBaseline({
+    name: contractInfo.contractName, // Contract name
+    network: contractInfo.deployedNetwork, // Contract network
+    blockNumber: contractInfo.lastBlock, // Last interation block number
+    txHash: contractInfo.transactionHash, // Tx Hash
+    address: contractInfo.contractAddress, // contract address
+    active: contractInfo.isActive
+  });
+
+  await newContract.save((err) => {
+    if (err) {
+      logger.error(err);
+      return false;
+    }
+    // saved!
+    logger.info(`[ ${contractInfo.contractName} ] contract added to DB...`);
+    return true;
+  });
+
+}
+
+const deployVerifierContract = async (sender: string) => {
+  let txHash;
+  const nonce = await wallet.getTransactionCount();
+  const unsignedTx = {
+    from: sender,
+    data: verifierContract.bytecode,
+    nonce,
+    gasLimit: 0
+  }
+
+  const gasEstimate = await wallet.estimateGas(unsignedTx);
+  logger.debug(`gasEstimate: ${gasEstimate}`);
+  unsignedTx.gasLimit = Math.ceil(Number(gasEstimate) * 1.1);
+  logger.debug(`GasLimit: ${unsignedTx.gasLimit}`)
+
+  const tx = await wallet.sendTransaction(unsignedTx);
+  await tx.wait();
+  txHash = tx.hash;
+
+  return txHash;
+}
+
+
+const deployShieldContract = async (sender: string, verifierAddress: string, treeHeight: number) => {
+  let txHash;
+  const nonce = await wallet.getTransactionCount();
+  const abiCoder = new ethers.utils.AbiCoder();
+  // Encode the constructor parameters, then append to bytecode
+  const encodedParams = abiCoder.encode(["address", "uint"], [verifierAddress, treeHeight]);
+  const bytecodeWithParams = verifierContract.bytecode + encodedParams.slice(2).toString();
+  const unsignedTx = {
+    from: sender,
+    data: bytecodeWithParams,
+    nonce,
+    gasLimit: 0
+  };
+
+  const gasEstimate = await wallet.estimateGas(unsignedTx);
+  unsignedTx.gasLimit = Math.ceil(Number(gasEstimate) * 1.1);
+  logger.debug(`gasEstimate: ${gasEstimate}`);
+  const tx = await wallet.sendTransaction(unsignedTx);
+  await tx.wait();
+  txHash = tx.hash;
+
+  return txHash;
+}
+
+
 const main = async () => {
   dotenv.config();
   const port = process.env.SERVER_PORT;
 
   logger.info("Starting commmitment manager server...");
+  logger.debug(`shieldContract: ${shieldContract.contractName}`);
+  logger.debug(`verifierContract: ${verifierContract.contractName}`)
 
   const dbUrl = 'mongodb://' +
     `${process.env.DATABASE_USER}` + ':' +
@@ -64,12 +149,162 @@ const main = async () => {
     res.sendStatus(200);
   });
 
+
+  /*app.get('/shell', async (req: any, res: any) => {
+
+    const execInfo = req.body;
+
+    if (!execInfo) {
+      logger.error("No  command to execute...");
+      return false;
+    }
+    // const result = await didGenerateDidConfiguration('autotoyz.open4g.com');
+    // const result = await didGenerateDidConfiguration('{}');
+    const result = await didVerifyWellKnownDidConfiguration('tailwindpower.netlify.app');
+
+    res.send(result || {});
+  });*/
+
+
+  app.get('/did-generate', async (req: any, res: any) => {
+
+    const execInfo = req.body;
+
+    if (!execInfo) {
+      logger.error("No  command to execute...");
+      return false;
+    }
+    const result = await didGenerateDidConfiguration(execInfo.did, execInfo.domain);
+
+    res.send(result || {});
+  });
+
+
+  app.get('/did-create-identity', async (req: any, res: any) => {
+
+    const execInfo = '{}';
+
+    if (!execInfo) {
+      logger.error("No  command to execute...");
+      return false;
+    }
+    const result = await didIdentityManagerCreateIdentity(execInfo);
+
+    res.send(result || {});
+  });
+
+
+  app.get('/did-verify', async (req: any, res: any) => {
+
+    const execInfo = req.body;
+
+    if (!execInfo) {
+      logger.error("No  command to execute...");
+      return false;
+    }
+    const result = await didVerifyWellKnownDidConfiguration(execInfo.domain);
+
+    res.send(result || {});
+  });
+
+
+  // api for get data from database
+  app.get("/getmerkletrees", async (req: any, res: any) => {
+    await merkleTrees.find({}, (err: any, data: any) => {
+              if (err) {
+                  res.send(err);
+              } else {
+                  res.send(data || {});
+              }
+          });
+  });
+
+
+  app.post("/deploy-shield-contract", async (req: any, res: any, next: any) => {
+
+    const deployInfo = req.body;
+    let txHash;
+
+    if (!deployInfo) {
+      logger.error("No contract to deploy...");
+      return false;
+    }
+
+    logger.info(`Sender Address: ${deployInfo.sender}`);
+    txHash = await deployShieldContract(deployInfo.sender, deployInfo.verifierAddress, 2);
+
+    if (txHash)
+      res.send(txHash || null)
+    else
+      res.send({message: "None contract to save..."})
+
+  });
+
+
+  app.post("/deploy-verifier-contract", async (req: any, res: any, next: any) => {
+
+    const deployInfo = req.body;
+    let txHash;
+
+    if (!deployInfo) {
+      logger.error("No contract to deploy...");
+      return false;
+    }
+
+    logger.info(`Sender Address: ${deployInfo.sender}`);
+    txHash = await deployVerifierContract(deployInfo.sender);
+
+    if (txHash)
+      res.send(txHash || null)
+    else
+      res.send({message: "None contract to save..."})
+
+  });
+
+
+  app.post("/deploy-contracts", async (req: any, res: any, next: any) => {
+
+    const deployInfo = req.body;
+    let contractsDeployed;
+
+    if (!deployInfo) {
+      logger.error("No contracts to deploy...");
+      return false;
+    }
+
+    contractsDeployed = await deployContracts(deployInfo.sender, deployInfo.deployedNetwork);
+
+    if (contractsDeployed)
+      res.send(contractsDeployed || null)
+    else
+      res.send({message: "None contract to deploy..."})
+
+  });
+
+
+  app.post("/save-contract", async (req: any, res: any, next: any) => {
+
+    const contractInfo = req.body;
+
+    if (!contractInfo) {
+      logger.error("No contract to save...");
+      return false;
+    }
+
+    if (saveContract(contractInfo))
+      res.sendStatus(200);
+    else
+    res.send({message: "None contract to save..."});
+
+  });
+
+
   app.post("/save-settings", async (req: any, res: any, next: any) => {
 
     const settings = req.body;
 
     if (!settings) {
-      logger.error("No settings to save...");
+      logger.error("None settings to save...");
       return false;
     }
 
@@ -117,17 +352,6 @@ WALLET_PRIVATE_KEY="${settings.WALLET_PRIVATE_KEY}"
 WALLET_PUBLIC_KEY="${settings.WALLET_PUBLIC_KEY}"
 `);
     res.sendStatus(200);
-  });
-
-  // api for get data from database
-  app.get("/getdata", async (req: any, res: any) => {
-    await merkleTrees.find({}, (err: any, data: any) => {
-              if (err) {
-                  res.send(err);
-              } else {
-                  res.send(data || {});
-              }
-          });
   });
 
   // Single endpoint to handle all JSON-RPC requests

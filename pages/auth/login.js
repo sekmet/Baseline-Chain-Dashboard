@@ -1,21 +1,33 @@
 import React, { useCallback, useEffect } from "react";
-import { useWallet } from 'use-wallet'
+import { useWallet } from 'use-wallet';
 import Link from "next/link";
 import { useRouter } from 'next/router'
 
 // layout for page
 import Auth from "layouts/Auth.js";
 
+import { isWalletConnected, setWalletConnected } from 'components/Utils/isWalletConnected';
+
 export default function Login() {
 
   const router = useRouter();
   const wallet = useWallet();
   const blockNumber = wallet.getBlockNumber();
+  let connectedId;
 
-  if (wallet.status === 'connected'){
-    router.push('/')
-  }
-
+  useEffect(() => {
+     connectedId = isWalletConnected();
+     console.log("connectedId  ", connectedId, wallet.status )
+     if (wallet.status == 'disconnected' && connectedId != null) {
+      wallet.connect(connectedId);
+    }
+    if (wallet.status === 'connected' && connectedId === null){
+      setWalletConnected(wallet.connector);
+    }
+    if (wallet.status === 'connected'){
+      router.push('/');
+    }
+  }, [connectedId, wallet]);
 
   return (
     <>

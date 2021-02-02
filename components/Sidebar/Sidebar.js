@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 
 import NotificationDropdown from "components/Dropdowns/NotificationDropdown.js";
 import UserDropdown from "components/Dropdowns/UserDropdown.js";
+import { setWalletConnected } from '../Utils/isWalletConnected';
 
 export default function Sidebar() {
   const [collapseShow, setCollapseShow] = React.useState("hidden");
@@ -183,7 +184,7 @@ export default function Sidebar() {
             <button
                       className="bg-white active:bg-gray-100 text-gray-800 font-normal px-4 py-2 mt-6 rounded outline-none focus:outline-none mr-2 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
                       type="button"
-                      onClick={() => {wallet.reset(); router.push('/auth/login');}}
+                      onClick={() => {wallet.reset(); setWalletConnected(null); router.push('/auth/login');}}
                     >
                       <img
                         alt="..."

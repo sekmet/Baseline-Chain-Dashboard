@@ -1,6 +1,6 @@
 
 /* eslint-disable no-alert, no-console, react/no-find-dom-node */
-import React, { useEffect }  from "react";
+import React from "react";
 import '../../assets/styles/tree.css';
 import '.../../assets/styles/tree-basic.css';
 import Tree, { TreeNode } from 'rc-tree';
@@ -83,7 +83,7 @@ class TreeData extends React.Component {
   };
 
   render() {
-    const customLabel = (
+    /*const customLabel = (
       <span className="cus-label">
         <span>operations: </span>
         <span style={{ color: 'blue' }} onClick={this.onEdit}>
@@ -98,7 +98,7 @@ class TreeData extends React.Component {
           Delete
         </span>
       </span>
-    );
+    );*/
 
     return (
       <div style={{ margin: '0 11px' }} className="mb-6">
@@ -108,12 +108,13 @@ class TreeData extends React.Component {
           showLine
           checkable
           selectable={false}
-          defaultExpandAll
+          //defaultExpandAll
           onExpand={this.onExpand}
           defaultSelectedKeys={this.state.defaultSelectedKeys}
           defaultCheckedKeys={this.state.defaultCheckedKeys}
           onSelect={this.onSelect}
           onCheck={this.onCheck}
+          onActiveChange={key => console.log('Active:', key)}
           treeData={treeData}
         />          
         {/*<Tree

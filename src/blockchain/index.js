@@ -1,5 +1,6 @@
 import { subscribeMerkleEvents, unsubscribeMerkleEvents } from "./events";
 import { get_ws_provider, http_provider, restartSubscriptions, checkChainLogs, jsonrpc } from "./utils";
+import { deployContracts } from "./chain";
 import { shieldContract } from "./shield-contract";
 
 export {
@@ -10,5 +11,6 @@ export {
   http_provider,
   checkChainLogs,
   jsonrpc,
+  deployContracts,
   shieldContract
 };
