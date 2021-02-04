@@ -36,7 +36,7 @@ export default function commitMgrEnv() {
       DatabasePassword: DATABASE_PASSWORD.replace(regex, ''),
       DatabaseHost: DATABASE_HOST.replace(regex, ''),
       EthClientType: ETH_CLIENT_TYPE.replace(regex, ''),
-      InfuraId: INFURA_ID.replace(regex, ''),
+      InfuraId: INFURA_ID ? INFURA_ID.replace(regex, '') : '',
       EthClientWs: ETH_CLIENT_WS.replace(regex, ''),
       EthClientHttp: ETH_CLIENT_HTTP.replace(regex, ''),
       ChainId: CHAIN_ID.replace(regex, ''),

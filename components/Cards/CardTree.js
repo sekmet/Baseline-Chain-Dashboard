@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import TreeMerkle from '../Utils/TreeData';
+import { SendCommitment } from '../Utils/Commitment';
+import useSwr from 'swr';
 
+const fetcher = (url) => fetch(url).then((res) => res.json());
 // components
-export default function CardTree({ title }) {
-
+export default function CardTree({ title, contractShield, walletAddress, network }) {
   const treeTitle = title ? title : "[DB] Merkle Tree";
+
+  const { data, error } = contractShield ? useSwr(`http://api.baseline.test/getmerkletree/${contractShield}_0`, fetcher) : {data:{}};
+
 
   return (
     <>
@@ -20,6 +25,7 @@ export default function CardTree({ title }) {
               <button
                 className="bg-green-500 text-white active:bg-green-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                 type="button"
+                onClick={() => (walletAddress && network !== 'local') ? SendCommitment( walletAddress, contractShield, network) : SendCommitment(null, contractShield, 'local') }
               >
                 New Commit
               </button>
@@ -38,7 +44,7 @@ export default function CardTree({ title }) {
           {/* Projects table */}
           <div className="items-center w-full bg-transparent" style={{ height: "296px"}}>
           <hr className="mb-1 border-b-1 border-gray-400" />
-              {/*<TreeMerkle />*/}
+              <TreeMerkle  data={data} />
           </div>
         </div>
       </div>

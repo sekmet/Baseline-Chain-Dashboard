@@ -7,6 +7,8 @@ import { UseWalletProvider } from 'use-wallet';
 import detectEthereumProvider from '@metamask/detect-provider';
 import PageChange from "components/PageChange/PageChange.js";
 
+import { createGlobalState } from 'react-hooks-global-state';
+
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "assets/styles/tailwind.css";
 
@@ -52,6 +54,13 @@ const getEthChainId = async () => {
   }
 }
 
+const initialState = { 
+  shieldContract: '',
+  shieldContractLocal: ''
+ };
+
+const { useGlobalState } = createGlobalState(initialState);
+
 export default class MyApp extends App {
   componentDidMount = async () => {
     this.setState({
@@ -88,7 +97,7 @@ export default class MyApp extends App {
   }
 
   state = {
-    chainId: 1,
+    chainId: 1
   }
 
 

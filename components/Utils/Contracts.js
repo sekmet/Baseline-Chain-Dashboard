@@ -1,4 +1,5 @@
 import React, { useState }  from "react";
+import axios from "axios";
 import { useWallet } from 'use-wallet';
 
 /*
@@ -12,22 +13,20 @@ export function useUser() {
   }
 */
 
-export function getTransactionReceipt(txHash) {
+export function useContract() {
 
-  axios.post('http://api.baseline.test/jsonrpc', {
-    jsonrpc: "2.0",
-    method: "eth_getTransactionReceipt",
-    params: [txHash],
-    id: 1,
-    })
+  const contractsAvailable = axios.get('http://api.baseline.test/contracts-available')
     .then((response) => {
         //access the resp here....
-        const txDetails = res.body.result;
-        let verifierAddress = txDetails.contractAddress;
-        console.log(`Transaction Address: ${verifierAddress}`);
+        
+        return response.data;
     })
     .catch((error) => {
         console.log(error);
     });
 
+    //console.log(contractsAvailable)
+    const [contracts, setContracts] = useState(contractsAvailable);
+
+    return { contracts: contracts };
 }

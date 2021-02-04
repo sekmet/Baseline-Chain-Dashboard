@@ -9,7 +9,7 @@ import { dbConnect } from "./db";
 import { merkleTrees } from "./db/models/MerkleTree";
 import { contractBaseline } from "./db/models/Contract";
 import { execShellTest, didIdentityManagerCreateIdentity, didGenerateDidConfiguration, didVerifyWellKnownDidConfiguration } from "./blockchain/did";
-import { get_ws_provider, restartSubscriptions, deployContracts } from "./blockchain";
+import { get_ws_provider, restartSubscriptions, sendBaselineBalance, deployContracts, sendCommit, sendBaselineTrack, sendBaselineGetTracked, sendBaselineVerifyAndPush, sendFirstLeaf, runTests, switchChain } from "./blockchain";
 
 import * as fs from 'fs';
 import * as path from 'path';
@@ -30,6 +30,7 @@ const saveEnv = async (settings: any) => {
 
 }
 
+
 const saveContract = async (contractInfo: any) => {
 
   if (!contractInfo) {
@@ -38,12 +39,12 @@ const saveContract = async (contractInfo: any) => {
   }
 
   const newContract = new contractBaseline({
-    name: contractInfo.contractName, // Contract name
-    network: contractInfo.deployedNetwork, // Contract network
-    blockNumber: contractInfo.lastBlock, // Last interation block number
-    txHash: contractInfo.transactionHash, // Tx Hash
-    address: contractInfo.contractAddress, // contract address
-    active: contractInfo.isActive
+    name: contractInfo.name, // Contract name
+    network: contractInfo.network, // Contract network
+    blockNumber: contractInfo.blockNumber, // Last interation block number
+    txHash: contractInfo.txHash, // Tx Hash
+    address: contractInfo.address, // contract address
+    active: contractInfo.active
   });
 
   await newContract.save((err) => {
@@ -52,13 +53,13 @@ const saveContract = async (contractInfo: any) => {
       return false;
     }
     // saved!
-    logger.info(`[ ${contractInfo.contractName} ] contract added to DB...`);
+    logger.info(`[ ${contractInfo.name} ] contract added to DB...`);
     return true;
   });
 
 }
 
-const deployVerifierContract = async (sender: string) => {
+const deployVerifierContract = async (sender: string, network: string) => {
   let txHash;
   const nonce = await wallet.getTransactionCount();
   const unsignedTx = {
@@ -81,7 +82,7 @@ const deployVerifierContract = async (sender: string) => {
 }
 
 
-const deployShieldContract = async (sender: string, verifierAddress: string, treeHeight: number) => {
+const deployShieldContract = async (sender: string, verifierAddress: string, network: string, treeHeight: number) => {
   let txHash;
   const nonce = await wallet.getTransactionCount();
   const abiCoder = new ethers.utils.AbiCoder();
@@ -102,8 +103,12 @@ const deployShieldContract = async (sender: string, verifierAddress: string, tre
   await tx.wait();
   txHash = tx.hash;
 
+  // sendFirstLeaf(sender, )
+
   return txHash;
 }
+
+
 
 
 const main = async () => {
@@ -149,6 +154,11 @@ const main = async () => {
     res.sendStatus(200);
   });
 
+  app.get('/network-mode', async (req: any, res: any) => {
+
+    const result = process.env.CHAIN_ID;
+    res.send(result || {});
+  });
 
   /*app.get('/shell', async (req: any, res: any) => {
 
@@ -164,6 +174,21 @@ const main = async () => {
 
     res.send(result || {});
   });*/
+
+  app.post('/switch-chain', async (req: any, res: any) => {
+
+    const execInfo = req.body;
+
+    if (!execInfo) {
+      logger.error("No  command to execute...");
+      return false;
+    }
+    // const result = await didGenerateDidConfiguration('autotoyz.open4g.com');
+    // const result = await didGenerateDidConfiguration('{}');
+    const result = await switchChain(execInfo.network);
+
+    res.send(result || {});
+  });
 
 
   app.get('/did-generate', async (req: any, res: any) => {
@@ -208,7 +233,7 @@ const main = async () => {
   });
 
 
-  // api for get data from database
+  // api for get merkle data from database
   app.get("/getmerkletrees", async (req: any, res: any) => {
     await merkleTrees.find({}, (err: any, data: any) => {
               if (err) {
@@ -218,6 +243,141 @@ const main = async () => {
               }
           });
   });
+
+
+  app.get("/getmerkletree/:addressId", async (req: any, res: any) => {
+    await merkleTrees.findOne({_id: req.params.addressId}, (err: any, data: any) => {
+              if (err) {
+                  res.send(err);
+              } else {
+                  res.send(data || {});
+              }
+          });
+  });
+
+  // api for get contracts data from database
+  app.get("/contracts-available", async (req: any, res: any) => {
+    await contractBaseline.find({}, (err: any, data: any) => {
+              if (err) {
+                  res.send(err);
+              } else {
+                  res.send(data || {});
+              }
+          });
+  });
+
+  // api for get contracts data from database
+  app.get("/contracts-local", async (req: any, res: any) => {
+    await contractBaseline.find({network: 'local'}, (err: any, data: any) => {
+              if (err) {
+                  res.send(err);
+              } else {
+                  res.send(data || {});
+              }
+          });
+  });
+
+          // api for get contracts data from database
+  app.get("/contracts/:networkId", async (req: any, res: any) => {
+    await contractBaseline.find({network: req.params.networkId}, (err: any, data: any) => {
+              if (err) {
+                  res.send(err);
+              } else {
+                  res.send(data || {});
+              }
+          });
+  });
+
+
+  app.post("/send-commit", async (req: any, res: any, next: any) => {
+
+    const deployInfo = req.body;
+    let txHash;
+
+    if (!deployInfo) {
+      logger.error("No commit found...");
+      return false;
+    }
+
+    logger.info(`Sender Address: ${deployInfo.sender}`);
+    logger.info(`Shield Contract Address: ${deployInfo.shieldAddress}`);
+    // await sendBaselineTrack(deployInfo.shieldAddress, deployInfo.network);
+    // const shieldTracked = await sendBaselineGetTracked();
+
+    // if (shieldTracked)
+    //  logger.info(`Shield Contract Tracked: ${shieldTracked}`);
+
+    // txHash = await sendBaselineVerifyAndPush(deployInfo.sender, deployInfo.shieldAddress, deployInfo.network);
+    txHash = await sendCommit(deployInfo.sender, deployInfo.shieldAddress, deployInfo.network);
+
+    if (txHash)
+      res.send(txHash || null)
+    else
+      res.send({message: "Could not retreive commit from blockchain..."})
+
+  });
+
+
+
+  app.post("/send-first-commit", async (req: any, res: any, next: any) => {
+
+    const deployInfo = req.body;
+    let txHash;
+
+    if (!deployInfo) {
+      logger.error("No commit found...");
+      return false;
+    }
+
+    logger.info(`Sender Address: ${deployInfo.sender}`);
+    logger.info(`Shield Contract Address: ${deployInfo.shieldAddress}`);
+    // await sendBaselineTrack(deployInfo.shieldAddress, deployInfo.network);
+    // const shieldTracked = await sendBaselineGetTracked();
+
+    // if (shieldTracked)
+    //  logger.info(`Shield Contract Tracked: ${shieldTracked}`);
+
+    // txHash = await sendBaselineVerifyAndPush(deployInfo.sender, deployInfo.shieldAddress, deployInfo.network);
+    txHash = await sendCommit(deployInfo.sender, deployInfo.shieldAddress, deployInfo.network);
+
+    if (txHash)
+      res.send(txHash || null)
+    else
+      res.send({message: "Could not retreive commit from blockchain..."})
+
+  });
+
+
+  app.post("/run-tests", async (req: any, res: any, next: any) => {
+
+    const deployInfo = req.body;
+    let txHash;
+
+    if (!deployInfo) {
+      logger.error("No params found...");
+      return false;
+    }
+
+    logger.info(`Sender Address: ${deployInfo.sender}`);
+    logger.info(`Shield Contract Address: ${deployInfo.shieldAddress}`);
+    logger.info(`Verifier Contract Address: ${deployInfo.verifierAddress}`);
+    // await sendBaselineTrack(deployInfo.shieldAddress, deployInfo.network);
+    // const shieldTracked = await sendBaselineGetTracked();
+
+    // if (shieldTracked)
+    //  logger.info(`Shield Contract Tracked: ${shieldTracked}`);
+
+    // txHash = await sendBaselineVerifyAndPush(deployInfo.sender, deployInfo.shieldAddress, deployInfo.network);
+    // txHash = await sendFirstLeaf(deployInfo.sender, deployInfo.shieldAddress, deployInfo.network);
+    txHash = await runTests(deployInfo.sender, deployInfo.verifierAddress, deployInfo.network, saveContract);
+
+    if (txHash)
+      res.send(txHash || null)
+    else
+      res.send({message: "Could not run tests..."})
+
+  });
+
 
 
   app.post("/deploy-shield-contract", async (req: any, res: any, next: any) => {
@@ -231,7 +391,7 @@ const main = async () => {
     }
 
     logger.info(`Sender Address: ${deployInfo.sender}`);
-    txHash = await deployShieldContract(deployInfo.sender, deployInfo.verifierAddress, 2);
+    txHash = await deployShieldContract(deployInfo.sender, deployInfo.verifierAddress, deployInfo.network, 2);
 
     if (txHash)
       res.send(txHash || null)
@@ -252,7 +412,7 @@ const main = async () => {
     }
 
     logger.info(`Sender Address: ${deployInfo.sender}`);
-    txHash = await deployVerifierContract(deployInfo.sender);
+    txHash = await deployVerifierContract(deployInfo.sender, deployInfo.network);
 
     if (txHash)
       res.send(txHash || null)
@@ -271,8 +431,11 @@ const main = async () => {
       logger.error("No contracts to deploy...");
       return false;
     }
+    if (!deployInfo.sender){
+      deployInfo.sender = process.env.WALLET_PUBLIC_KEY;
+    }
 
-    contractsDeployed = await deployContracts(deployInfo.sender, deployInfo.deployedNetwork);
+    contractsDeployed = await deployContracts(deployInfo.sender, undefined, deployInfo.deployedNetwork, saveContract);
 
     if (contractsDeployed)
       res.send(contractsDeployed || null)

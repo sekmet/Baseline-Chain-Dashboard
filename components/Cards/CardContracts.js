@@ -1,12 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { Alert } from "../Utils/Alert";
+import useSwr from 'swr';
 
+
+const deployContracts = async (network, senderAddress) => {
+
+  await axios.post('http://api.baseline.test/deploy-contracts', {
+      deployedNetwork: network,
+      sender: senderAddress
+    })
+    .then((response) => {
+        //access the resp here....
+        const statusDeploy = response;
+        console.log(`Status Contracts Deployment: ${response}`);
+        Alert('success', 'Contracts Deployed...', `Contracts deployed with success into ${network} network..`);
+        return response;
+    })
+    .catch((error) => {
+        console.log(error);
+        Alert('error', 'ERROR...', error);
+    });
+
+}
 
 // components
-export default function CardContracts({ title }) {
+const fetcher = (url) => fetch(url).then((res) => res.json());
+
+export default function CardContracts({ title, network, walletAddress, setContractShield }) {
+
+  const [deploying, setDeploying] = useState(0);
 
   const contractsTitle = title ? title : "Contracts";
+  const contractsNetwork = network ? network : "local";
+  const { data, error } = useSwr(`http://api.baseline.test/contracts/${contractsNetwork}`, fetcher);
+
+
+  if (data && data.length)
+    setContractShield(data[1].address);
 
   return (
     <>
@@ -20,16 +51,26 @@ export default function CardContracts({ title }) {
             </div>
             <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
               <button
-                className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                className={deploying 
+                  ? "bg-gray-200 text-gray-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                  : "bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"}
                 type="button"
+                disabled={deploying || (data && data.length) ? 'disabled' : ''}
+                onClick={() => { 
+                    setDeploying(1);
+                    deployContracts(network, walletAddress).then((result) => {
+                    setDeploying(0);
+                    //console.log('Deployed');
+                  }); 
+                }}
               >
-                Deploy Contracts
+                {deploying ? '[ Deploying ] please wait...' : 'Deploy Contracts'}
               </button>
             </div>
           </div>
         </div>
         <div className="block w-full overflow-x-auto" style={{ height: "296px"}}>
-          {/* Projects table */}
+          {/* Contracts table */}
           <table className="items-center w-full bg-transparent border-collapse">
             <thead>
               <tr>
@@ -43,45 +84,36 @@ export default function CardContracts({ title }) {
                   Created At
                 </th>
                 <th className="px-6 bg-gray-100 text-gray-600 align-middle border border-solid border-gray-200 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-no-wrap font-semibold text-left">
-                  Last Block
+                  Block Number
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr>
+              {data && data.length ?
+              data.map((contract) => 
+              <tr key={contract._id}>
                 <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-no-wrap p-4 text-left text-blue-500">
-                  Shield.sol
+                  {contract.name}
                 </th>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                  <a href="https://goerli.etherscan.io/address/0x63758bc241d4cd924ebfbed273a2f6a1179f8f86" target="_blank" className="text-black hover:text-green-500 font-semibold">
-                      0x63758bc241d4cd924ebfbed273a2f6a1179f8f86
+                  <a href={`https://${contract.network}.etherscan.io/address/${contract.address}`} target="_blank" className="text-black hover:text-green-500 font-semibold">
+                      {contract.address}
                   </a>
                 </td>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                  2021-01-29
+                  {new Date(contract.createdAt).toISOString().split('T')[0]}
                 </td>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
                   <i className="fa fa-cubes text-green-500 mr-4"></i>
-                  4192259
+                  {contract.blockNumber}
                 </td>
-              </tr>
+              </tr> )
+              :
               <tr>
-                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-no-wrap p-4 text-left text-blue-500">
-                  VerifierNoop.sol
-                </th>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                <a href="https://goerli.etherscan.io/address/0x76f272ba2b1c3887f117dfeeb600e53b50a2207b" target="_blank" className="text-black hover:text-green-500 font-semibold">
-                    0x76f272ba2b1c3887f117dfeeb600e53b50a2207b
-                </a>
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                  2021-01-29
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                  <i className="fa fa-cubes text-green-500 mr-4"></i>
-                  4192263
-                </td>
-              </tr>
+              <td colSpan="4" className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-center text-xs whitespace-no-wrap p-4">
+                <h3>No contracts available</h3>
+            </td>
+            </tr>}
             </tbody>
           </table>
         </div>

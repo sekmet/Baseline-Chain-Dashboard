@@ -116,7 +116,13 @@ export default class FormSettings extends React.Component {
         EthClientHttp,
         ChainId, 
         WalletPrivateKey, 
-        WalletPublicKey 
+        WalletPublicKey,
+        LocalEthClientType, 
+        LocalEthClientWs, 
+        LocalEthClientHttp,
+        LocalChainId, 
+        LocalWalletPrivateKey, 
+        LocalWalletPublicKey 
         } = props;
     
 
@@ -128,13 +134,19 @@ export default class FormSettings extends React.Component {
             DATABASE_NAME: DatabaseName ? DatabaseName : "baseline", 
             DATABASE_PASSWORD: DatabasePassword ? DatabasePassword : "password123", 
             DATABASE_HOST: DatabaseHost ? DatabaseHost : "localhost:27017",
-            ETH_CLIENT_TYPE: EthClientType ? EthClientType : "besu",
-            INFURA_ID: (EthClientType === "besu" || EthClientType === "ganache") ? "" : InfuraId,
-            ETH_CLIENT_WS: EthClientWs ? EthClientWs : "http://localhost:8546",
-            ETH_CLIENT_HTTP: EthClientHttp ? EthClientHttp : "http://localhost:8545",
-            CHAIN_ID: (EthClientType === "besu" || EthClientType === "ganache") ? 101010 : ChainId,
-            WALLET_PRIVATE_KEY: WalletPrivateKey ? WalletPrivateKey : "0xae6ae8e5ccbfb04590405997ee2d52d2b330726137b875053c36d94e974d162f",
-            WALLET_PUBLIC_KEY: WalletPublicKey ? WalletPublicKey : "0xf17f52151EbEF6C7334FAD080c5704D77216b732",
+            ETH_CLIENT_TYPE: EthClientType,
+            INFURA_ID: InfuraId,
+            ETH_CLIENT_WS: EthClientWs,
+            ETH_CLIENT_HTTP: EthClientHttp ,
+            CHAIN_ID: ChainId,
+            WALLET_PRIVATE_KEY: WalletPrivateKey,
+            WALLET_PUBLIC_KEY: WalletPublicKey,
+            LOCAL_ETH_CLIENT_TYPE: LocalEthClientType ? LocalEthClientType : "besu",
+            LOCAL_ETH_CLIENT_WS: LocalEthClientType === "besu" ? "http://localhost:8546" : "http://localhost:8545",
+            LOCAL_ETH_CLIENT_HTTP: "http://localhost:8545",
+            LOCAL_CHAIN_ID: 101010,
+            LOCAL_WALLET_PRIVATE_KEY: "0xae6ae8e5ccbfb04590405997ee2d52d2b330726137b875053c36d94e974d162f",
+            LOCAL_WALLET_PUBLIC_KEY: "0xf17f52151EbEF6C7334FAD080c5704D77216b732",            
             errorLabel: "",
             status: "",
             errorLabelHidden: true
@@ -168,6 +180,12 @@ export default class FormSettings extends React.Component {
             CHAIN_ID,
             WALLET_PRIVATE_KEY,
             WALLET_PUBLIC_KEY,
+            LOCAL_ETH_CLIENT_TYPE,
+            LOCAL_ETH_CLIENT_WS,
+            LOCAL_ETH_CLIENT_HTTP,
+            LOCAL_CHAIN_ID,
+            LOCAL_WALLET_PRIVATE_KEY,
+            LOCAL_WALLET_PUBLIC_KEY,
             errorLabel,
             status
         } = this.state;
@@ -265,20 +283,7 @@ export default class FormSettings extends React.Component {
                 </div>
                 <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
 
-
-                </div>
-
-                    <hr className="mt-6 border-b-1 border-gray-400" />
-
-                    <div className="rounded-t bg-white mb-0 px-6 py-6">
-                    <div className="text-center flex justify-between">
-                        <h6 className="text-gray-800 text-xl font-bold">Local Besu / Ganache Settings</h6>
-                    </div>
-                    </div>
-                    
-                    <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
-
-                    <h6 className="text-gray-500 text-sm mt-3 mb-6 font-bold uppercase">
+                <h6 className="text-gray-500 text-sm mt-3 mb-6 font-bold uppercase">
                     Database Information
                     </h6>
                     <div className="flex flex-wrap">
@@ -351,6 +356,20 @@ export default class FormSettings extends React.Component {
                         </div>
                     </div>
                     </div>
+
+                </div>
+
+                    <hr className="mt-6 border-b-1 border-gray-400" />
+
+                    <div className="rounded-t bg-white mb-0 px-6 py-6">
+                    <div className="text-center flex justify-between">
+                        <h6 className="text-gray-800 text-xl font-bold">Local Besu / Ganache Settings</h6>
+                    </div>
+                    </div>
+                    
+                    <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
+
+  
 
                     <h6 className="text-gray-500 text-sm mt-3 mb-6 font-bold uppercase">
                     Ethereum Client Information
@@ -466,80 +485,6 @@ export default class FormSettings extends React.Component {
                     </div>
                     
                     <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
-
-                    <h6 className="text-gray-500 text-sm mt-3 mb-6 font-bold uppercase">
-                    Database Information
-                    </h6>
-                    <div className="flex flex-wrap">
-                    <div className="w-full lg:w-6/12 px-4">
-                        <div className="relative w-full mb-3">
-                        <label
-                            className="block uppercase text-gray-700 text-xs font-bold mb-2"
-                            htmlFor="grid-password"
-                        >
-                            DATABASE USER
-                        </label>
-                        <input
-                            type="text"
-                            name="DATABASE_USER"
-                            value={DATABASE_USER} 
-                            onChange={this.onChange}
-                            className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
-                        />
-                        </div>
-                    </div>
-                    <div className="w-full lg:w-6/12 px-4">
-                        <div className="relative w-full mb-3">
-                        <label
-                            className="block uppercase text-gray-700 text-xs font-bold mb-2"
-                            htmlFor="grid-password"
-                        >
-                            DATABASE PASSWORD
-                        </label>
-                        <input
-                            name="DATABASE_PASSWORD"
-                            value={DATABASE_PASSWORD} 
-                            onChange={this.onChange}                        
-                            type="password"
-                            className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
-                        />
-                        </div>
-                    </div>
-                    <div className="w-full lg:w-6/12 px-4">
-                        <div className="relative w-full mb-3">
-                        <label
-                            className="block uppercase text-gray-700 text-xs font-bold mb-2"
-                            htmlFor="grid-password"
-                        >
-                            DATABASE HOST
-                        </label>
-                        <input
-                            name="DATABASE_HOST"
-                            value={DATABASE_HOST} 
-                            onChange={this.onChange}                        
-                            type="text"
-                            className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
-                        />
-                        </div>
-                    </div>
-                    <div className="w-full lg:w-6/12 px-4">
-                        <div className="relative w-full mb-3">
-                        <label
-                            className="block uppercase text-gray-700 text-xs font-bold mb-2"
-                            htmlFor="grid-password"
-                        >
-                            DATABASE NAME
-                        </label>
-                        <input
-                            name="DATABASE_NAME"
-                            value={DATABASE_NAME} 
-                            onChange={this.onChange}                        
-                            type="text"
-                            className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
-                        />
-                        </div>
-                    </div>
-                    </div>
 
                     <h6 className="text-gray-500 text-sm mt-3 mb-6 font-bold uppercase">
                     Ethereum Client Information
@@ -665,22 +610,6 @@ export default class FormSettings extends React.Component {
                             type="text"
                             className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
                         />
-                        </div>
-                    </div>
-                    <div className="w-full lg:w-12/12 px-4">
-                        <div className="relative w-full mb-3">
-                        <label
-                            className="block uppercase text-gray-700 text-xs font-bold mb-2"
-                            htmlFor="grid-password"
-                        >
-                            DID Identity
-                        </label>
-                        <textarea
-                            type="text"
-                            className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
-                            rows="9"
-                            defaultValue={`{"@context": "https://identity.foundation/.well-known/contexts/did-configuration-v0.0.jsonld", "linked_dids": ["eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJ2YyI6eyJjcmVkZW50aWFsU3ViamVjdCI6eyJvcmlnaW4iOiJ0YWlsd2luZHBvd2VyLm5ldGxpZnkuYXBwIn0sIkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIiwiaHR0cHM6Ly9pZGVudGl0eS5mb3VuZGF0aW9uLy53ZWxsLWtub3duL2NvbnRleHRzL2RpZC1jb25maWd1cmF0aW9uLXYwLjAuanNvbmxkIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJEb21haW5MaW5rYWdlQ3JlZGVudGlhbCJdfSwic3ViIjoiZGlkOmV0aHI6Z29lcmxpOjB4NDBkOWMzYWU2ODhhNmY0MGRmMzgyY2VmNzU1ZjU5OTFhNTQ4OWE2OSIsIm5iZiI6MTYxMTc3ODcyOSwiaXNzIjoiZGlkOmV0aHI6Z29lcmxpOjB4NDBkOWMzYWU2ODhhNmY0MGRmMzgyY2VmNzU1ZjU5OTFhNTQ4OWE2OSJ9.bpuXYwptwCrje3D1c1dBc8jsIcsVJaj5pUlPp1r_hP2cggbxhKcH0tvRXnaRn8d8WgDKQ3iOW2adv2Q0vsxttw"] }`}
-                        ></textarea>
                         </div>
                     </div>
                     </div>

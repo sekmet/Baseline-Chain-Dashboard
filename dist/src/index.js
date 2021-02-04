@@ -62,12 +62,12 @@ const saveContract = (contractInfo) => __awaiter(void 0, void 0, void 0, functio
         return false;
     }
     const newContract = new Contract_1.contractBaseline({
-        name: contractInfo.contractName,
-        network: contractInfo.deployedNetwork,
-        blockNumber: contractInfo.lastBlock,
-        txHash: contractInfo.transactionHash,
-        address: contractInfo.contractAddress,
-        active: contractInfo.isActive
+        name: contractInfo.name,
+        network: contractInfo.network,
+        blockNumber: contractInfo.blockNumber,
+        txHash: contractInfo.txHash,
+        address: contractInfo.address,
+        active: contractInfo.active
     });
     yield newContract.save((err) => {
         if (err) {
@@ -75,11 +75,11 @@ const saveContract = (contractInfo) => __awaiter(void 0, void 0, void 0, functio
             return false;
         }
         // saved!
-        logger_1.logger.info(`[ ${contractInfo.contractName} ] contract added to DB...`);
+        logger_1.logger.info(`[ ${contractInfo.name} ] contract added to DB...`);
         return true;
     });
 });
-const deployVerifierContract = (sender) => __awaiter(void 0, void 0, void 0, function* () {
+const deployVerifierContract = (sender, network) => __awaiter(void 0, void 0, void 0, function* () {
     let txHash;
     const nonce = yield chain_1.wallet.getTransactionCount();
     const unsignedTx = {
@@ -97,7 +97,7 @@ const deployVerifierContract = (sender) => __awaiter(void 0, void 0, void 0, fun
     txHash = tx.hash;
     return txHash;
 });
-const deployShieldContract = (sender, verifierAddress, treeHeight) => __awaiter(void 0, void 0, void 0, function* () {
+const deployShieldContract = (sender, verifierAddress, network, treeHeight) => __awaiter(void 0, void 0, void 0, function* () {
     let txHash;
     const nonce = yield chain_1.wallet.getTransactionCount();
     const abiCoder = new ethers_1.ethers.utils.AbiCoder();
@@ -116,6 +116,7 @@ const deployShieldContract = (sender, verifierAddress, treeHeight) => __awaiter(
     const tx = yield chain_1.wallet.sendTransaction(unsignedTx);
     yield tx.wait();
     txHash = tx.hash;
+    // sendFirstLeaf(sender, )
     return txHash;
 });
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -152,6 +153,10 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     app.get('/status', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.sendStatus(200);
     }));
+    app.get('/network-mode', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const result = process.env.CHAIN_ID;
+        res.send(result || {});
+    }));
     /*app.get('/shell', async (req: any, res: any) => {
   
       const execInfo = req.body;
@@ -166,6 +171,17 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
   
       res.send(result || {});
     });*/
+    app.post('/switch-chain', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const execInfo = req.body;
+        if (!execInfo) {
+            logger_1.logger.error("No  command to execute...");
+            return false;
+        }
+        // const result = await didGenerateDidConfiguration('autotoyz.open4g.com');
+        // const result = await didGenerateDidConfiguration('{}');
+        const result = yield blockchain_1.switchChain(execInfo.network);
+        res.send(result || {});
+    }));
     app.get('/did-generate', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const execInfo = req.body;
         if (!execInfo) {
@@ -193,7 +209,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         const result = yield did_1.didVerifyWellKnownDidConfiguration(execInfo.domain);
         res.send(result || {});
     }));
-    // api for get data from database
+    // api for get merkle data from database
     app.get("/getmerkletrees", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         yield MerkleTree_1.merkleTrees.find({}, (err, data) => {
             if (err) {
@@ -204,6 +220,111 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         });
     }));
+    app.get("/getmerkletree/:addressId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        yield MerkleTree_1.merkleTrees.findOne({ _id: req.params.addressId }, (err, data) => {
+            if (err) {
+                res.send(err);
+            }
+            else {
+                res.send(data || {});
+            }
+        });
+    }));
+    // api for get contracts data from database
+    app.get("/contracts-available", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        yield Contract_1.contractBaseline.find({}, (err, data) => {
+            if (err) {
+                res.send(err);
+            }
+            else {
+                res.send(data || {});
+            }
+        });
+    }));
+    // api for get contracts data from database
+    app.get("/contracts-local", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        yield Contract_1.contractBaseline.find({ network: 'local' }, (err, data) => {
+            if (err) {
+                res.send(err);
+            }
+            else {
+                res.send(data || {});
+            }
+        });
+    }));
+    // api for get contracts data from database
+    app.get("/contracts/:networkId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        yield Contract_1.contractBaseline.find({ network: req.params.networkId }, (err, data) => {
+            if (err) {
+                res.send(err);
+            }
+            else {
+                res.send(data || {});
+            }
+        });
+    }));
+    app.post("/send-commit", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+        const deployInfo = req.body;
+        let txHash;
+        if (!deployInfo) {
+            logger_1.logger.error("No commit found...");
+            return false;
+        }
+        logger_1.logger.info(`Sender Address: ${deployInfo.sender}`);
+        logger_1.logger.info(`Shield Contract Address: ${deployInfo.shieldAddress}`);
+        // await sendBaselineTrack(deployInfo.shieldAddress, deployInfo.network);
+        // const shieldTracked = await sendBaselineGetTracked();
+        // if (shieldTracked)
+        //  logger.info(`Shield Contract Tracked: ${shieldTracked}`);
+        // txHash = await sendBaselineVerifyAndPush(deployInfo.sender, deployInfo.shieldAddress, deployInfo.network);
+        txHash = yield blockchain_1.sendCommit(deployInfo.sender, deployInfo.shieldAddress, deployInfo.network);
+        if (txHash)
+            res.send(txHash || null);
+        else
+            res.send({ message: "Could not retreive commit from blockchain..." });
+    }));
+    app.post("/send-first-commit", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+        const deployInfo = req.body;
+        let txHash;
+        if (!deployInfo) {
+            logger_1.logger.error("No commit found...");
+            return false;
+        }
+        logger_1.logger.info(`Sender Address: ${deployInfo.sender}`);
+        logger_1.logger.info(`Shield Contract Address: ${deployInfo.shieldAddress}`);
+        // await sendBaselineTrack(deployInfo.shieldAddress, deployInfo.network);
+        // const shieldTracked = await sendBaselineGetTracked();
+        // if (shieldTracked)
+        //  logger.info(`Shield Contract Tracked: ${shieldTracked}`);
+        // txHash = await sendBaselineVerifyAndPush(deployInfo.sender, deployInfo.shieldAddress, deployInfo.network);
+        txHash = yield blockchain_1.sendCommit(deployInfo.sender, deployInfo.shieldAddress, deployInfo.network);
+        if (txHash)
+            res.send(txHash || null);
+        else
+            res.send({ message: "Could not retreive commit from blockchain..." });
+    }));
+    app.post("/run-tests", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+        const deployInfo = req.body;
+        let txHash;
+        if (!deployInfo) {
+            logger_1.logger.error("No params found...");
+            return false;
+        }
+        logger_1.logger.info(`Sender Address: ${deployInfo.sender}`);
+        logger_1.logger.info(`Shield Contract Address: ${deployInfo.shieldAddress}`);
+        logger_1.logger.info(`Verifier Contract Address: ${deployInfo.verifierAddress}`);
+        // await sendBaselineTrack(deployInfo.shieldAddress, deployInfo.network);
+        // const shieldTracked = await sendBaselineGetTracked();
+        // if (shieldTracked)
+        //  logger.info(`Shield Contract Tracked: ${shieldTracked}`);
+        // txHash = await sendBaselineVerifyAndPush(deployInfo.sender, deployInfo.shieldAddress, deployInfo.network);
+        // txHash = await sendFirstLeaf(deployInfo.sender, deployInfo.shieldAddress, deployInfo.network);
+        txHash = yield blockchain_1.runTests(deployInfo.sender, deployInfo.verifierAddress, deployInfo.network, saveContract);
+        if (txHash)
+            res.send(txHash || null);
+        else
+            res.send({ message: "Could not run tests..." });
+    }));
     app.post("/deploy-shield-contract", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         const deployInfo = req.body;
         let txHash;
@@ -212,7 +333,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             return false;
         }
         logger_1.logger.info(`Sender Address: ${deployInfo.sender}`);
-        txHash = yield deployShieldContract(deployInfo.sender, deployInfo.verifierAddress, 2);
+        txHash = yield deployShieldContract(deployInfo.sender, deployInfo.verifierAddress, deployInfo.network, 2);
         if (txHash)
             res.send(txHash || null);
         else
@@ -226,7 +347,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             return false;
         }
         logger_1.logger.info(`Sender Address: ${deployInfo.sender}`);
-        txHash = yield deployVerifierContract(deployInfo.sender);
+        txHash = yield deployVerifierContract(deployInfo.sender, deployInfo.network);
         if (txHash)
             res.send(txHash || null);
         else
@@ -239,7 +360,10 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             logger_1.logger.error("No contracts to deploy...");
             return false;
         }
-        contractsDeployed = yield blockchain_1.deployContracts(deployInfo.sender, deployInfo.deployedNetwork);
+        if (!deployInfo.sender) {
+            deployInfo.sender = process.env.WALLET_PUBLIC_KEY;
+        }
+        contractsDeployed = yield blockchain_1.deployContracts(deployInfo.sender, undefined, deployInfo.deployedNetwork, saveContract);
         if (contractsDeployed)
             res.send(contractsDeployed || null);
         else

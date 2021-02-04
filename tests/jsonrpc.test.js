@@ -188,6 +188,7 @@ describe("Check that old logs are scanned when baseline_track is called", () => 
     const sender = accounts[0];
     const nonce = await wallet.getTransactionCount();
     const abiCoder = new ethers.utils.AbiCoder();
+    console.log('Verifier Address: ', verifierAddress);
     // Encode the constructor parameters, then append to bytecode
     const encodedParams = abiCoder.encode(["address", "uint"], [verifierAddress, treeHeight]);
     const bytecodeWithParams = shieldContract.bytecode + encodedParams.slice(2).toString();
