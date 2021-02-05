@@ -21,6 +21,26 @@
 
 [VerifierNoop.sol - 0x76f272ba2b1c3887f117dfeeb600e53b50a2207b](https://goerli.etherscan.io/address/0x76f272ba2b1c3887f117dfeeb600e53b50a2207b)
 
+# Screenshots
+
+![Login Page](./baseline_dashboard_login.png)
+
+![Dashboard](./baseline_dashboard_1.png)
+
+![Dashboard](./baseline_dashboard_2.png)
+
+![Dashboard](./baseline_dashboard_3.png)
+
+![Switch Network](./baseline_dashboard_switch_network.png)
+
+![Baseline DID Generator](./baseline_didgenerator.png)
+
+![Baseline Basic Phonebook](./baseline_phonebook.png)
+
+![Commit-mgr Settings](./baseline_dashboard_settings.png)
+
+
+
 # Changelog
 
 ## Alpha Release [0.1.0] 2021-01-28
@@ -53,20 +73,3 @@
 > [ ] the verification circuit enforces some business logic (instead of using a no-op circuit)
 
 > [X] add a UI that allows the user to configure the commit-mgr service
-
-
-![Login Page](./baseline_dashboard_login.png)
-
-![Dashboard](./baseline_dashboard_1.png)
-
-![Dashboard](./baseline_dashboard_2.png)
-
-![Dashboard](./baseline_dashboard_3.png)
-
-![Switch Network](./baseline_dashboard_switch_network.png)
-
-![Baseline DID Generator](./baseline_didgenerator.png)
-
-![Baseline Basic Phonebook](./baseline_phonebook.png)
-
-![Commit-mgr Settings](./baseline_dashboard_settings.png)
