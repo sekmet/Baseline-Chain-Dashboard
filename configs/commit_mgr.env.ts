@@ -60,7 +60,7 @@ export default function commitMgrEnv() {
       LocalWalletPublicKey: fileEnvLocalParsed.WALLET_PUBLIC_KEY.replace(regex, '')
     };
   
-    console.log("updatedEnv---- ", updatedEnv);
+    //console.log("updatedEnv---- ", updatedEnv);
 
     return updatedEnv;
 }

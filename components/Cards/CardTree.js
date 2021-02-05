@@ -8,7 +8,7 @@ const fetcher = (url) => fetch(url).then((res) => res.json());
 export default function CardTree({ title, contractShield, walletAddress, network }) {
   const treeTitle = title ? title : "[DB] Merkle Tree";
 
-  const { data, error } = contractShield ? useSwr(`http://api.baseline.test/getmerkletree/${contractShield}_0`, fetcher) : {data:{}};
+  const { data, error } = contractShield ? useSwr(`http://api.baseline.test/getmerkletree/${contractShield}_0`, { refreshInterval: 3000, fetcher: fetcher }) : {data:{}};
 
 
   return (
@@ -23,26 +23,30 @@ export default function CardTree({ title, contractShield, walletAddress, network
             </div>
             <div className="relative px-1 max-w-full flex-grow flex-1 text-right">
               <button
-                className="bg-green-500 text-white active:bg-green-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                disabled={!data || !data.nodes ? 'disabled' : ''}
+                className={(data && data.nodes) ? "bg-green-500 text-white active:bg-green-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                : "bg-gray-300 text-white active:bg-green-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"}
                 type="button"
                 onClick={() => (walletAddress && network !== 'local') ? SendCommitment( walletAddress, contractShield, network) : SendCommitment(null, contractShield, 'local') }
               >
-                New Commit
+                New Commitment
               </button>
             </div>
-            <div className="relative px-1 max-w-full flex-grow flex-1 text-right">
+            {/*<div className="relative px-1 text-right">
               <button
-                className="bg-blue-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                disabled={!data || !data.nodes ? 'disabled' : ''}
+                className={(data && data.nodes) ? "bg-red-500 text-white active:bg-red-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                :"bg-gray-300 text-white active:bg-red-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"}
                 type="button"
               >
-                Update
+                Reset
               </button>
-            </div>
+  </div>*/}
           </div>
         </div>
         <div className="block w-full overflow-x-auto">
           {/* Projects table */}
-          <div className="items-center w-full bg-transparent" style={{ height: "296px"}}>
+          <div className="items-center w-full bg-transparent" style={{ height: "287px"}}>
           <hr className="mb-1 border-b-1 border-gray-400" />
               <TreeMerkle  data={data} />
           </div>

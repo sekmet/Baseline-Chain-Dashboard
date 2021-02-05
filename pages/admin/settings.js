@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useWallet } from 'use-wallet';
 
 // components
 import FormSettings from "components/Forms/FormSettings.js";
@@ -21,12 +22,13 @@ export async function getStaticProps() {
 }
 
 export default function Settings(props) {
-
+  const wallet = useWallet();
+  
   return (
     <>
       <div className="flex flex-wrap">
         <div className="w-full lg:w-12/12 px-4">
-          <FormSettings {...props} />
+          <FormSettings wallet={wallet} {...props} />
         </div>
       </div>
     </>

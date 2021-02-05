@@ -40,31 +40,30 @@ exports.execShellTest = () => __awaiter(void 0, void 0, void 0, function* () {
     return result;
 });
 exports.didIdentityManagerCreateIdentity = (domain) => __awaiter(void 0, void 0, void 0, function* () {
-    shell.cd('did');
-    const result = yield shell.exec(`yarn daf execute -m identityManagerCreateIdentity -a '{"domain":"${domain}"}'`);
+    const result = yield shell.cd('did').exec(`yarn daf execute -m identityManagerCreateIdentity -a '{"domain":"${domain}"}'`);
     // Run external tool synchronously
     if (result.code !== 0) {
         shell.echo('Error: DAF identityManagerCreateIdentity failed');
         //shell.exit(1);
         return 'Error: DAF identityManagerCreateIdentity failed';
     }
+    shell.cd('..');
     return result.split('Result (Identity interface):')[1].split('Done')[0];
 });
 exports.didGenerateDidConfiguration = (did, domain) => __awaiter(void 0, void 0, void 0, function* () {
-    shell.cd('did');
-    const result = yield shell.exec(`yarn daf execute -m generateDidConfiguration -a '{"dids":["${did}"],"domain":"${domain}"}'`);
+    const result = yield shell.cd('did').exec(`yarn daf execute -m generateDidConfiguration -a '{"dids":["${did}"],"domain":"${domain}"}'`);
     // Run external tool synchronously
     if (result.code !== 0) {
         shell.echo('Error: DAF generateDidConfiguration failed');
         //shell.exit(1);
         return 'Error: DAF generateDidConfiguration failed';
     }
+    shell.cd('..');
     return result.split('):')[1].split('Done')[0];
     //return result;
 });
 exports.didVerifyWellKnownDidConfiguration = (domain) => __awaiter(void 0, void 0, void 0, function* () {
-    shell.cd('did');
-    const result = yield shell.exec(`yarn daf execute -m verifyWellKnownDidConfiguration -a '{"domain":"${domain}"}'`);
+    const result = yield shell.cd('did').exec(`yarn daf execute -m verifyWellKnownDidConfiguration -a '{"domain":"${domain}"}'`);
     // Run external tool synchronously
     if (result.code !== 0) {
         shell.echo('Error: DAF verifyWellKnownDidConfiguration failed');
@@ -76,6 +75,7 @@ exports.didVerifyWellKnownDidConfiguration = (domain) => __awaiter(void 0, void 
         //shell.exit(1);
         return 'Error: DAF verifyWellKnownDidConfiguration - Failed to download the .well-known DID';
     }
+    shell.cd('..');
     return result.split('):')[1].split('Done')[0];
     //return result;
 });

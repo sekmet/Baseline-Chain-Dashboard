@@ -18,6 +18,7 @@ const axios_1 = __importDefault(require("axios"));
 const shelljs_1 = __importDefault(require("shelljs"));
 const logger_1 = require("../logger");
 const dotenv_1 = __importDefault(require("dotenv"));
+const hash_1 = require("../merkle-tree/hash");
 const Shield_json_1 = __importDefault(require("../../artifacts/Shield.json"));
 dotenv_1.default.config();
 const commitMgrEndpoint = "http://api.baseline.test/jsonrpc";
@@ -75,7 +76,7 @@ exports.switchChain = (network) => __awaiter(void 0, void 0, void 0, function* (
     }
     return result;
 });
-exports.deployContracts = (sender, verifierContractAddress, network, saveContract) => __awaiter(void 0, void 0, void 0, function* () {
+exports.deployContracts = (sender, verifierContractAddress, network, saveContract, saveCommiment) => __awaiter(void 0, void 0, void 0, function* () {
     let txHash;
     let shieldContractAddress;
     let treeHeight = 2;
@@ -189,6 +190,15 @@ exports.deployContracts = (sender, verifierContractAddress, network, saveContrac
     const txLeaf = yield exports.wallet.sendTransaction(unsignedLeafTx);
     yield txLeaf.wait();
     const txReceipt = yield exports.web3provider.getTransactionReceipt(txLeaf.hash);
+    if (network === 'local') {
+        // Save commitment to db if network is local
+        let newCommit = {
+            commitHash: publicInputs[0],
+            commitment: newCommitment,
+            network: 'local' // always local network *TODO
+        };
+        yield saveCommiment(newCommit);
+    }
     logger_1.logger.debug(`TX Receipt Contract Address: ${txReceipt.txHash}`);
     logger_1.logger.debug(`TX Receipt Status: ${txReceipt.status}`);
     //################## Baseline_track should initiate merkle tree in db
@@ -249,22 +259,42 @@ exports.deployContracts = (sender, verifierContractAddress, network, saveContrac
     return true;
 });
 // Counterparty sends 1st leaf into untracked Shield contract
-exports.sendCommit = (sender, shieldContractAddress, network) => __awaiter(void 0, void 0, void 0, function* () {
+exports.sendCommit = (newCommitment, sender, shieldContractAddress, network, saveCommiment) => __awaiter(void 0, void 0, void 0, function* () {
     const proof = [5];
-    const publicInputs = ["0x9f72ea0cf49536e3c66c787f705186df9a4378083753ae9536d65b3ad7fcddc4"]; // Sha256 hash of new commitment
-    const newCommitment = "0x8222222222222222222222222222222222222222222222222222222222222222";
+    //const publicInputs = ["0x9f72ea0cf49536e3c66c787f705186df9a4378083753ae9536d65b3ad7fcddc4"]; // Sha256 hash of new commitment
+    //const newCommitment = "0x8222222222222222222222222222222222222222222222222222222222222222";
+    //const newCommitment = "0x7465737400000000000000000000000000000000000000000000000000000000
+    logger_1.logger.debug(`NETWORK >>> ${network}`);
+    const newCommitHash = hash_1.concatenateThenHash([newCommitment]);
+    const publicInputs = [`${newCommitHash}`]; // Sha256 hash of new commitment
+    let buffer = Buffer.alloc(32);
+    //buffer.fill('0', 0, 32);
+    buffer.write(newCommitment, "utf-8");
+    buffer.fill('0', buffer.length, 32);
+    const bufferCommitmentHash = Buffer.from(buffer);
+    logger_1.logger.debug(`newCommitmentHash: 0x${bufferCommitmentHash.toString('hex')}`);
+    const newCommitmentHash = `0x${bufferCommitmentHash.toString('hex')}`;
     const sendCommitLeaf = yield axios_1.default.post('http://api.baseline.test/jsonrpc', {
         jsonrpc: "2.0",
         method: "baseline_verifyAndPush",
-        params: [sender, shieldContractAddress, proof, publicInputs, newCommitment],
+        params: [sender, shieldContractAddress, proof, publicInputs, newCommitmentHash],
         id: 1,
     })
-        .then((response) => {
+        .then((response) => __awaiter(void 0, void 0, void 0, function* () {
         //access the resp here....
         const txHash = response.data.result.txHash;
         logger_1.logger.debug(`Baseline Send Commit TxHash : ${txHash}`);
+        if (network === 'local') {
+            // Save commitment to db if network is local
+            let newCommit = {
+                commitHash: publicInputs[0],
+                commitment: newCommitmentHash,
+                network: 'local' // always local network *TODO
+            };
+            yield saveCommiment(newCommit);
+        }
         return response.data.result;
-    })
+    }))
         .catch((error) => {
         logger_1.logger.error(error);
         return false;

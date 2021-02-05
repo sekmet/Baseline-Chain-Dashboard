@@ -1,7 +1,6 @@
 import React from "react";
 import axios from "axios";
 import { Alert } from "../Utils/Alert";
-//import { useWallet } from 'use-wallet';
 
 const get_chain_id_info = (chainId) => {
   /* # Chain ID */
@@ -94,7 +93,6 @@ const getEthClientInfo = (ethClientType, chainId, infuraId) => {
 
 }
 
-
 // components
 export default class FormSettings extends React.Component {
 
@@ -153,6 +151,28 @@ export default class FormSettings extends React.Component {
         };
     }
 
+
+    componentDidMount(){
+        
+        const data = axios.get('http://api.baseline.test/network-mode')
+
+        data.then((network) => {
+        
+            //console.log(network.data, this.props.wallet)
+            
+            if (this.props.wallet.chainId !== this.state.CHAIN_ID){
+                this.setState({CHAIN_ID: parseInt(this.props.wallet.chainId, 10)})
+                //console.log({CHAIN_ID: parseInt(this.props.wallet.chainId, 10)})
+            }
+
+            if (this.props.wallet.account !== this.state.WALLET_PUBLIC_KEY){
+                this.setState({WALLET_PUBLIC_KEY: this.props.wallet.account})
+                this.setState({WALLET_PRIVATE_KEY: ''})
+                //console.log({WALLET_PUBLIC_KEY: this.props.wallet.account})
+            }
+
+        });
+    }
 
     onChange = (e) => {
         // Because we named the inputs to match their corresponding values in state, it's

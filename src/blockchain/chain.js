@@ -4,6 +4,7 @@ import shell from 'shelljs';
 import { logger } from "../logger";
 import dotenv from "dotenv";
 
+import { concatenateThenHash } from "../merkle-tree/hash";
 import shieldContract from "../../artifacts/Shield.json";
 
 dotenv.config();
@@ -68,7 +69,7 @@ export const switchChain = async (network) => {
   return result;
 }
 
-export const deployContracts = async (sender, verifierContractAddress, network, saveContract) => {
+export const deployContracts = async (sender, verifierContractAddress, network, saveContract, saveCommiment) => {
 let txHash;
 let shieldContractAddress;
 let treeHeight = 2;
@@ -201,6 +202,16 @@ const txDetails = await axios.post('http://api.baseline.test/jsonrpc', {
 
   const txReceipt = await web3provider.getTransactionReceipt(txLeaf.hash);
 
+  if (network === 'local') {
+    // Save commitment to db if network is local
+    let newCommit = {
+      commitHash: publicInputs[0], // Sha256 hash of new commitment
+      commitment: newCommitment, // did network
+      network: 'local' // always local network *TODO
+    }
+    await saveCommiment(newCommit);
+  }
+
   logger.debug(`TX Receipt Contract Address: ${txReceipt.txHash}`);
   logger.debug(`TX Receipt Status: ${txReceipt.status}`);
 
@@ -269,21 +280,42 @@ const baselineGetCommit = await axios.post('http://api.baseline.test/jsonrpc', {
 }
 
 // Counterparty sends 1st leaf into untracked Shield contract
-export const sendCommit = async (sender, shieldContractAddress, network) => {
+export const sendCommit = async (newCommitment, sender, shieldContractAddress, network, saveCommiment) => {
   const proof = [5];
-  const publicInputs = ["0x9f72ea0cf49536e3c66c787f705186df9a4378083753ae9536d65b3ad7fcddc4"]; // Sha256 hash of new commitment
-  const newCommitment = "0x8222222222222222222222222222222222222222222222222222222222222222";
-
+  //const publicInputs = ["0x9f72ea0cf49536e3c66c787f705186df9a4378083753ae9536d65b3ad7fcddc4"]; // Sha256 hash of new commitment
+  //const newCommitment = "0x8222222222222222222222222222222222222222222222222222222222222222";
+  //const newCommitment = "0x7465737400000000000000000000000000000000000000000000000000000000
+  logger.debug(`NETWORK >>> ${network}`)
+  const newCommitHash = concatenateThenHash([newCommitment]);
+  const publicInputs = [`${newCommitHash}`]; // Sha256 hash of new commitment
+  let buffer = Buffer.alloc(32);
+  //buffer.fill('0', 0, 32);
+  buffer.write(newCommitment, "utf-8");
+  buffer.fill('0', buffer.length, 32);
+  const bufferCommitmentHash = Buffer.from(buffer);
+  logger.debug(`newCommitmentHash: 0x${bufferCommitmentHash.toString('hex')}`);
+  const newCommitmentHash = `0x${bufferCommitmentHash.toString('hex')}`;
   const sendCommitLeaf = await axios.post('http://api.baseline.test/jsonrpc', {
     jsonrpc: "2.0",
     method: "baseline_verifyAndPush",
-    params: [sender, shieldContractAddress, proof, publicInputs, newCommitment],
+    params: [sender, shieldContractAddress, proof, publicInputs, newCommitmentHash],
     id: 1,
     })
-    .then((response) => {
+    .then( async (response) => {
         //access the resp here....
         const txHash = response.data.result.txHash;
         logger.debug(`Baseline Send Commit TxHash : ${txHash}`);
+
+        if (network === 'local') {
+          // Save commitment to db if network is local
+          let newCommit = {
+            commitHash: publicInputs[0], // Sha256 hash of new commitment
+            commitment: newCommitmentHash, // did network
+            network: 'local' // always local network *TODO
+          }
+          await saveCommiment(newCommit);
+        }
+
         return response.data.result;
     })
     .catch((error) => {

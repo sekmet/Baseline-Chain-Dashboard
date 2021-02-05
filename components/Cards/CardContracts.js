@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Alert } from "../Utils/Alert";
+import { Alert, ConfirmAlert } from "../Utils/Alert";
 import useSwr from 'swr';
 
 
 const deployContracts = async (network, senderAddress) => {
 
   await axios.post('http://api.baseline.test/deploy-contracts', {
-      deployedNetwork: network,
+      network: network,
       sender: senderAddress
     })
     .then((response) => {
@@ -24,6 +24,22 @@ const deployContracts = async (network, senderAddress) => {
 
 }
 
+const resetContracts = async () => {
+
+  await axios.post('http://api.baseline.test/reset-contracts')
+    .then((response) => {
+        //access the resp here....
+        console.log(`Status Contracts Reset: ${response.data}`);
+        return response.data;
+    })
+    .catch((error) => {
+        console.log(error);
+        Alert('error', 'ERROR...', error);
+    });
+
+}
+
+
 // components
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
@@ -33,10 +49,10 @@ export default function CardContracts({ title, network, walletAddress, setContra
 
   const contractsTitle = title ? title : "Contracts";
   const contractsNetwork = network ? network : "local";
-  const { data, error } = useSwr(`http://api.baseline.test/contracts/${contractsNetwork}`, fetcher);
+  const { data, error } = useSwr(`http://api.baseline.test/contracts/${contractsNetwork}`, { refreshInterval: 3000, fetcher: fetcher });
 
 
-  if (data && data.length)
+  if (data && data.length > 1)
     setContractShield(data[1].address);
 
   return (
@@ -53,7 +69,8 @@ export default function CardContracts({ title, network, walletAddress, setContra
               <button
                 className={deploying 
                   ? "bg-gray-200 text-gray-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                  : "bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"}
+                  : (data && data.length) ? "bg-gray-300 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" 
+                  : "bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" }
                 type="button"
                 disabled={deploying || (data && data.length) ? 'disabled' : ''}
                 onClick={() => { 
@@ -65,6 +82,17 @@ export default function CardContracts({ title, network, walletAddress, setContra
                 }}
               >
                 {deploying ? '[ Deploying ] please wait...' : 'Deploy Contracts'}
+              </button>
+            </div>
+            <div className="relative px-1 text-right">
+              <button
+                disabled={!data || !data.length ? 'disabled' : ''}
+                className={(data && data.length) ? "bg-red-500 text-white active:bg-red-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                : "bg-gray-300 text-white active:bg-red-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"}
+                type="button"
+                onClick={() => ConfirmAlert('warning', 'Are you sure?', "You won't be able to revert this!", 'Yes, do it!', resetContracts)}
+              >
+                Reset Contracts
               </button>
             </div>
           </div>

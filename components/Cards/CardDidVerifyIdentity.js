@@ -41,7 +41,6 @@ export default class CardDidVerifyIdentity extends React.Component {
       e.preventDefault();
       // get our form data out of state
       if (CheckIsValidDomain(this.state.domainname)){
-        this.setState({canSubmit: true});
         this.setState({canSubmit: true, hasError: false, errorMessage: '', isVerifying: true});
   
         return await axios.post('http://api.baseline.test/did-verify', { domain: this.state.domainname } )
@@ -139,11 +138,11 @@ export default class CardDidVerifyIdentity extends React.Component {
                       value={didIdentity}
                       disabled="disabled"
                       type="text"
-                      className="px-3 py-3 placeholder-gray-400 text-green-800 mb-2 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
+                      className="px-3 py-3 placeholder-gray-400 text-green-500 mb-2 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
                   />
                   <textarea
                       type="text"
-                      className="px-3 py-3 placeholder-gray-400 text-green-500 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
+                      className="px-3 py-3 placeholder-gray-400 text-green-500 bg-white rounded text-sm shadow outline-none shadow-outline w-full ease-linear transition-all duration-150"
                       rows="9"
                       defaultValue={resultJson}
                   ></textarea>

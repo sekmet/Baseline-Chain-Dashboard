@@ -14,8 +14,7 @@ export const execShellTest = async () => {
 
 export const didIdentityManagerCreateIdentity = async (domain) => {
 
-    shell.cd('did');
-    const result = await shell.exec(`yarn daf execute -m identityManagerCreateIdentity -a '{"domain":"${domain}"}'`);
+    const result = await shell.cd('did').exec(`yarn daf execute -m identityManagerCreateIdentity -a '{"domain":"${domain}"}'`);
     // Run external tool synchronously
     if (result.code !== 0) {
         shell.echo('Error: DAF identityManagerCreateIdentity failed');
@@ -23,13 +22,14 @@ export const didIdentityManagerCreateIdentity = async (domain) => {
         return 'Error: DAF identityManagerCreateIdentity failed';
     }
 
+    shell.cd('..');
+
     return result.split('Result (Identity interface):')[1].split('Done')[0];
 }
 
 export const didGenerateDidConfiguration = async (did, domain) => {
 
-    shell.cd('did');
-    const result = await shell.exec(`yarn daf execute -m generateDidConfiguration -a '{"dids":["${did}"],"domain":"${domain}"}'`);
+    const result = await shell.cd('did').exec(`yarn daf execute -m generateDidConfiguration -a '{"dids":["${did}"],"domain":"${domain}"}'`);
     // Run external tool synchronously
     if (result.code !== 0) {
         shell.echo('Error: DAF generateDidConfiguration failed');
@@ -37,14 +37,14 @@ export const didGenerateDidConfiguration = async (did, domain) => {
         return 'Error: DAF generateDidConfiguration failed';
     }
 
+    shell.cd('..');
     return result.split('):')[1].split('Done')[0];
     //return result;
 }
 
 export const didVerifyWellKnownDidConfiguration = async (domain) => {
 
-    shell.cd('did');
-    const result = await shell.exec(`yarn daf execute -m verifyWellKnownDidConfiguration -a '{"domain":"${domain}"}'`);
+    const result = await shell.cd('did').exec(`yarn daf execute -m verifyWellKnownDidConfiguration -a '{"domain":"${domain}"}'`);
     // Run external tool synchronously
     if (result.code !== 0) {
         shell.echo('Error: DAF verifyWellKnownDidConfiguration failed');
@@ -58,6 +58,7 @@ export const didVerifyWellKnownDidConfiguration = async (domain) => {
         return 'Error: DAF verifyWellKnownDidConfiguration - Failed to download the .well-known DID';
     }
 
+    shell.cd('..');
     return result.split('):')[1].split('Done')[0];
     //return result;
 }

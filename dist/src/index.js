@@ -40,6 +40,7 @@ const rpc_server_1 = require("./rpc-server");
 const logger_1 = require("./logger");
 const db_1 = require("./db");
 const MerkleTree_1 = require("./db/models/MerkleTree");
+const Commitment_1 = require("./db/models/Commitment");
 const Contract_1 = require("./db/models/Contract");
 const Phonebook_1 = require("./db/models/Phonebook");
 const did_1 = require("./blockchain/did");
@@ -77,6 +78,26 @@ const savePhonebookEntry = (entryInfo) => __awaiter(void 0, void 0, void 0, func
         }
         // saved!
         logger_1.logger.info(`[ ${entryInfo.name} ] domain added to phonebook...`);
+        return true;
+    });
+});
+const saveCommiment = (commitInfo) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!commitInfo) {
+        logger_1.logger.error("No commitment to save...");
+        return false;
+    }
+    const newCommitment = new Commitment_1.commitmentBaseline({
+        commitHash: commitInfo.commitHash,
+        commitment: commitInfo.commitment,
+        network: 'local' // always local network *TODO
+    });
+    yield newCommitment.save((err) => {
+        if (err) {
+            logger_1.logger.error(err);
+            return false;
+        }
+        // saved!
+        logger_1.logger.info(`[ ${newCommitment.commitment} ] commitment added to DB...`);
         return true;
     });
 });
@@ -178,7 +199,51 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         res.sendStatus(200);
     }));
     app.get('/network-mode', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const result = process.env.CHAIN_ID;
+        /*# Chain ID
+        # 1: Mainnet
+        # 3: Ropsten
+        # 4: Rinkeby
+        # 5: Goerli
+        # 42: Kovan
+        # 101010: Custom network (private ganache or besu network)*/
+        let chainName;
+        switch (parseInt(process.env.CHAIN_ID, 10)) {
+            case 1:
+                chainName = 'MAINNET';
+                break;
+            case 3:
+                chainName = 'ROPSTEN';
+                break;
+            case 4:
+                chainName = 'RINKEBY';
+                break;
+            case 5:
+                chainName = 'GOERLI';
+                break;
+            case 42:
+                chainName = 'KOVAN';
+                break;
+            case 101010:
+                chainName = 'LOCAL';
+                break;
+            default:
+                chainName = 'LOCAL';
+                break;
+        }
+        const result = {
+            chainId: process.env.CHAIN_ID,
+            chainName,
+            walletAddress: process.env.WALLET_PUBLIC_KEY,
+            infuraId: process.env.INFURA_ID,
+            commitServerPort: process.env.SERVER_PORT
+        };
+        res.send(result || {});
+    }));
+    app.get('/db-status', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const result = {
+            dbUrl: `${process.env.DATABASE_HOST}/${process.env.DATABASE_NAME}`,
+            dbHost: process.env.DATABASE_HOST
+        };
         res.send(result || {});
     }));
     /*app.get('/shell', async (req: any, res: any) => {
@@ -205,6 +270,17 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         // const result = await didGenerateDidConfiguration('{}');
         const result = yield blockchain_1.switchChain(execInfo.network);
         res.send(result || {});
+    }));
+    // api for get local commitments data from database
+    app.get("/get-commiments", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        yield Commitment_1.commitmentBaseline.find({}, (err, data) => {
+            if (err) {
+                res.send(err);
+            }
+            else {
+                res.send(data || {});
+            }
+        });
     }));
     app.post('/did-generate', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const execInfo = req.body;
@@ -300,6 +376,55 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         });
     }));
+    // delete db merkletree for a specific contract info from database
+    app.post("/delete-merkletree", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        yield MerkleTree_1.merkleTrees.deleteOne({ _id: req.params.addressId }, (err, data) => {
+            if (err) {
+                res.send(err);
+            }
+            else {
+                res.send(data || {});
+            }
+        });
+    }));
+    // delete db contract info from database
+    app.post("/reset-merkletree", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        yield MerkleTree_1.merkleTrees.deleteMany({}, (err, data) => {
+            if (err) {
+                res.send(err);
+            }
+            else {
+                res.send(data || {});
+            }
+        });
+    }));
+    // delete db contract info from database
+    app.post("/reset-contracts", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        yield Commitment_1.commitmentBaseline.deleteMany({}, (err, data) => {
+            if (err) {
+                logger_1.logger.error(err);
+            }
+            else {
+                logger_1.logger.debug(data || {});
+            }
+        });
+        yield MerkleTree_1.merkleTrees.deleteMany({}, (err, data) => {
+            if (err) {
+                logger_1.logger.error(err);
+            }
+            else {
+                logger_1.logger.debug(data || {});
+            }
+        });
+        yield Contract_1.contractBaseline.deleteMany({}, (err, data) => {
+            if (err) {
+                res.send(err);
+            }
+            else {
+                res.send(data || {});
+            }
+        });
+    }));
     // api for get contracts data from database
     app.get("/contracts-available", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         yield Contract_1.contractBaseline.find({}, (err, data) => {
@@ -342,12 +467,13 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         logger_1.logger.info(`Sender Address: ${deployInfo.sender}`);
         logger_1.logger.info(`Shield Contract Address: ${deployInfo.shieldAddress}`);
+        logger_1.logger.info(`New Commitment Sent: ${deployInfo.newCommitment}`);
         // await sendBaselineTrack(deployInfo.shieldAddress, deployInfo.network);
         // const shieldTracked = await sendBaselineGetTracked();
         // if (shieldTracked)
         //  logger.info(`Shield Contract Tracked: ${shieldTracked}`);
         // txHash = await sendBaselineVerifyAndPush(deployInfo.sender, deployInfo.shieldAddress, deployInfo.network);
-        txHash = yield blockchain_1.sendCommit(deployInfo.sender, deployInfo.shieldAddress, deployInfo.network);
+        txHash = yield blockchain_1.sendCommit(deployInfo.newCommitment, deployInfo.sender, deployInfo.shieldAddress, deployInfo.network, saveCommiment);
         if (txHash)
             res.send(txHash || null);
         else
@@ -433,7 +559,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         if (!deployInfo.sender) {
             deployInfo.sender = process.env.WALLET_PUBLIC_KEY;
         }
-        contractsDeployed = yield blockchain_1.deployContracts(deployInfo.sender, undefined, deployInfo.deployedNetwork, saveContract);
+        contractsDeployed = yield blockchain_1.deployContracts(deployInfo.sender, undefined, deployInfo.network, saveContract, saveCommiment);
         if (contractsDeployed)
             res.send(contractsDeployed || null);
         else

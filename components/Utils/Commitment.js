@@ -27,7 +27,7 @@ export function SendCommitment(walletAddress, shieldContractAddress, network) {
             })*/
   
             return await axios.post('http://api.baseline.test/send-commit', {
-                deployedNetwork: network,
+                network: network,
                 shieldAddress: shieldContractAddress,
                 newCommitment: newCommitment,
                 sender: walletAddress ? walletAddress : "0xf17f52151EbEF6C7334FAD080c5704D77216b732"

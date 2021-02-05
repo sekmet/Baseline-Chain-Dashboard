@@ -7,6 +7,7 @@ import { rpcServer } from "./rpc-server";
 import { logger, reqLogger, reqErrorLogger } from "./logger";
 import { dbConnect } from "./db";
 import { merkleTrees } from "./db/models/MerkleTree";
+import { commitmentBaseline } from "./db/models/Commitment";
 import { contractBaseline } from "./db/models/Contract";
 import { phonebookBaseline } from "./db/models/Phonebook";
 import { execShellTest, didIdentityManagerCreateIdentity, didGenerateDidConfiguration, didVerifyWellKnownDidConfiguration } from "./blockchain/did";
@@ -54,6 +55,31 @@ const savePhonebookEntry = async (entryInfo: any) => {
     }
     // saved!
     logger.info(`[ ${entryInfo.name} ] domain added to phonebook...`);
+    return true;
+  });
+
+}
+
+const saveCommiment = async (commitInfo: any) => {
+
+  if (!commitInfo) {
+    logger.error("No commitment to save...");
+    return false;
+  }
+
+  const newCommitment = new commitmentBaseline({
+    commitHash: commitInfo.commitHash, // Sha256 hash of new commitment
+    commitment: commitInfo.commitment, // did network
+    network: 'local' // always local network *TODO
+  });
+
+  await newCommitment.save((err) => {
+    if (err) {
+      logger.error(err);
+      return false;
+    }
+    // saved!
+    logger.info(`[ ${newCommitment.commitment} ] commitment added to DB...`);
     return true;
   });
 
@@ -185,7 +211,57 @@ const main = async () => {
 
   app.get('/network-mode', async (req: any, res: any) => {
 
-    const result = process.env.CHAIN_ID;
+    /*# Chain ID
+    # 1: Mainnet
+    # 3: Ropsten
+    # 4: Rinkeby
+    # 5: Goerli
+    # 42: Kovan
+    # 101010: Custom network (private ganache or besu network)*/
+
+    let chainName;
+    switch (parseInt(process.env.CHAIN_ID, 10)) {
+      case 1:
+        chainName = 'MAINNET';
+        break;
+      case 3:
+        chainName = 'ROPSTEN';
+        break;
+      case 4:
+        chainName = 'RINKEBY';
+        break;
+      case 5:
+        chainName = 'GOERLI';
+        break;
+      case 42:
+        chainName = 'KOVAN';
+        break;
+      case 101010:
+        chainName = 'LOCAL';
+        break;
+      default:
+        chainName = 'LOCAL';
+        break;
+    }
+
+    const result = {
+      chainId: process.env.CHAIN_ID,
+      chainName,
+      walletAddress: process.env.WALLET_PUBLIC_KEY,
+      infuraId: process.env.INFURA_ID,
+      commitServerPort: process.env.SERVER_PORT
+    }
+    res.send(result || {});
+  });
+
+
+  app.get('/db-status', async (req: any, res: any) => {
+
+    const result =  {
+      dbUrl: `${process.env.DATABASE_HOST}/${process.env.DATABASE_NAME}`,
+      dbHost: process.env.DATABASE_HOST
+    }
+
     res.send(result || {});
   });
 
@@ -217,6 +293,18 @@ const main = async () => {
     const result = await switchChain(execInfo.network);
 
     res.send(result || {});
+  });
+
+
+  // api for get local commitments data from database
+  app.get("/get-commiments", async (req: any, res: any) => {
+    await commitmentBaseline.find({}, (err: any, data: any) => {
+              if (err) {
+                  res.send(err);
+              } else {
+                  res.send(data || {});
+              }
+          });
   });
 
 
@@ -337,6 +425,57 @@ const main = async () => {
           });
   });
 
+  // delete db merkletree for a specific contract info from database
+  app.post("/delete-merkletree", async (req: any, res: any) => {
+    await merkleTrees.deleteOne({_id: req.params.addressId}, (err: any, data: any) => {
+              if (err) {
+                  res.send(err);
+              } else {
+                  res.send(data || {});
+              }
+          });
+  });
+
+  // delete db contract info from database
+  app.post("/reset-merkletree", async (req: any, res: any) => {
+    await merkleTrees.deleteMany({}, (err: any, data: any) => {
+              if (err) {
+                  res.send(err);
+              } else {
+                  res.send(data || {});
+              }
+          });
+  });
+
+
+  // delete db contract info from database
+  app.post("/reset-contracts", async (req: any, res: any) => {
+    await commitmentBaseline.deleteMany({}, (err: any, data: any) => {
+      if (err) {
+          logger.error(err);
+      } else {
+          logger.debug(data || {});
+      }
+    });
+
+    await merkleTrees.deleteMany({}, (err: any, data: any) => {
+      if (err) {
+          logger.error(err);
+      } else {
+          logger.debug(data || {});
+      }
+    });
+
+    await contractBaseline.deleteMany({}, (err: any, data: any) => {
+              if (err) {
+                  res.send(err);
+              } else {
+                  res.send(data || {});
+              }
+          });
+  });
+
+
   // api for get contracts data from database
   app.get("/contracts-available", async (req: any, res: any) => {
     await contractBaseline.find({}, (err: any, data: any) => {
@@ -383,6 +522,7 @@ const main = async () => {
 
     logger.info(`Sender Address: ${deployInfo.sender}`);
     logger.info(`Shield Contract Address: ${deployInfo.shieldAddress}`);
+    logger.info(`New Commitment Sent: ${deployInfo.newCommitment}`);
     // await sendBaselineTrack(deployInfo.shieldAddress, deployInfo.network);
     // const shieldTracked = await sendBaselineGetTracked();
 
@@ -390,7 +530,7 @@ const main = async () => {
     //  logger.info(`Shield Contract Tracked: ${shieldTracked}`);
 
     // txHash = await sendBaselineVerifyAndPush(deployInfo.sender, deployInfo.shieldAddress, deployInfo.network);
-    txHash = await sendCommit(deployInfo.sender, deployInfo.shieldAddress, deployInfo.network);
+    txHash = await sendCommit(deployInfo.newCommitment, deployInfo.sender, deployInfo.shieldAddress, deployInfo.network, saveCommiment);
 
     if (txHash)
       res.send(txHash || null)
@@ -517,7 +657,7 @@ const main = async () => {
       deployInfo.sender = process.env.WALLET_PUBLIC_KEY;
     }
 
-    contractsDeployed = await deployContracts(deployInfo.sender, undefined, deployInfo.deployedNetwork, saveContract);
+    contractsDeployed = await deployContracts(deployInfo.sender, undefined, deployInfo.network, saveContract, saveCommiment);
 
     if (contractsDeployed)
       res.send(contractsDeployed || null)
