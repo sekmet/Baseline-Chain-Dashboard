@@ -1,6 +1,20 @@
 # Baseline-Chain-Dashboard
-### project to be complete + live demo app in couple hours
-*Video Demo - Soon available*
+
+## Requirements
+- docker and docker-compose
+- node / npm
+- yarn
+
+## Development
+
+### Building
+- npm run build:all
+
+### Running Development
+- npm run dev
+
+### Running Productive *alpha version
+- npm run prod
 
 ### Contracts [GOERLI TEST NET]
 [Shield.sol - 0x63758bc241d4cd924ebfbed273a2f6a1179f8f86](https://goerli.etherscan.io/address/0x63758bc241d4cd924ebfbed273a2f6a1179f8f86)
@@ -23,14 +37,14 @@
 
 > [X] Shield.sol and Verifier.sol contracts should be deployed on a public testnet/mainnet (verifiable via etherscan or similar)
 
-> [ ] root/leaves of on-chain merkle-tree in Shield contract should match root/leaves of off-chain tree stored in mongo
+> [X] root/leaves of on-chain merkle-tree in Shield contract should match root/leaves of off-chain tree stored in mongo
 
 > [ ] commitments made in private Besu network should be replicated on public testnet/mainnet
 
 ### Bonus features:
-> [ ] add Well-Known DID configuration generator
+> [X] add Well-Known DID configuration generator
 
-> [ ] add simple Baseline Phonebook UI
+> [X] add simple Baseline Phonebook UI
 
 > [ ] use a faucet account or another way to fund public testnet/mainnet transactions so that judges can easily run test suite.
 
@@ -46,5 +60,13 @@
 ![Dashboard](./baseline_dashboard_1.png)
 
 ![Dashboard](./baseline_dashboard_2.png)
+
+![Dashboard](./baseline_dashboard_3.png)
+
+![Switch Network](./baseline_dashboard_switch_network.png)
+
+![Baseline DID Generator](./baseline_didgenerator.png)
+
+![Baseline Basic Phonebook](./baseline_phonebook.png)
 
 ![Commit-mgr Settings](./baseline_dashboard_settings.png)
