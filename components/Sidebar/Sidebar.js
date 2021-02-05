@@ -26,10 +26,10 @@ export default function Sidebar() {
           {/* Brand */}
           <Link href="/">
             <a
-              href="#pablo"
-              className="md:block text-left md:pb-2 text-gray-700 mr-0 inline-block whitespace-no-wrap text-sm uppercase font-bold p-4 px-0"
+              href="#baseline"
+              className="md:block text-left md:pb-2 text-gray-700 mr-0 inline-block whitespace-no-wrap text-sm uppercase font-bold p-4 px-0 text-center"
             >
-              Baseline Dashboard
+              <><img src="/baselineHorizontal-Logo-Full-Color.svg" /><small>Dashboard</small></>
             </a>
           </Link>
           {/* User */}

@@ -37,7 +37,7 @@ export default function Login() {
             <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-indigo-500 border-0">
               <div className="rounded-t mb-0 px-6 py-6">
                 <div className="text-center mb-3">
-                  <img src="https://www.baseline-protocol.org/images/baseline_Horizontal-Logo-allWhite.svg" />
+                  <img src="/baseline_Horizontal-Logo-allWhite.svg" />
                   <h3 className="text-white text-sm font-bold">
                     Connect with
                   </h3>
@@ -74,7 +74,7 @@ export default function Login() {
                       />
                       MetaMask
                     </button>
-                    <button
+                    {/*<button
                       className="bg-white active:bg-gray-100 text-gray-800 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
                       type="button"
                       onClick={() => wallet.connect('frame')}
@@ -85,19 +85,19 @@ export default function Login() {
                       src={require("assets/img/shield.svg")}
                     />
                     Frame
-                  </button>
-                  <button
-                      className="bg-white active:bg-gray-100 text-gray-800 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
-                      type="button"
-                      onClick={() => wallet.connect('portis')}
-                    >
-                    <img
-                      alt="..."
-                      className="w-5 mr-1"
-                      src={require("assets/img/key.svg")}
-                    />
-                    Portis
-                  </button>
+                    </button>
+                    <button
+                        className="bg-white active:bg-gray-100 text-gray-800 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
+                        type="button"
+                        onClick={() => wallet.connect('portis')}
+                      >
+                      <img
+                        alt="..."
+                        className="w-5 mr-1"
+                        src={require("assets/img/key.svg")}
+                      />
+                      Portis
+                    </button>*/}
                   </div>
                 )}
                 <hr className="mt-6 border-b-1 border-gray-400" />

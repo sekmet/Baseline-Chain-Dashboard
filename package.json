@@ -88,7 +88,7 @@
     "build:all": "npm-run-all build:tailwind build:next build:didserver clean lint tsc",
     "build": "npm-run-all clean lint tsc",
     "build:next": "next build",
-    "build:didserver": "cd did && npm run build && cd ..",
+    "build:didserver": "cd did && yarn install && npm run build && cd ..",
     "start:didserver": "node did/build/index.js daf server",
     "dev": "nodemon --watch src -e ts,ejs,js --exec npm-run-all build start start:didserver",
     "start": "node . & next dev -H 0.0.0.0",

@@ -1,5 +1,7 @@
 # Baseline-Chain-Dashboard
 
+![Baseline Logo](./assets/img/baselineHorizontal-Logo-Full-Color.svg)
+
 ## Requirements
 - docker and docker-compose
 - node / npm
