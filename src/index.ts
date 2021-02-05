@@ -8,6 +8,7 @@ import { logger, reqLogger, reqErrorLogger } from "./logger";
 import { dbConnect } from "./db";
 import { merkleTrees } from "./db/models/MerkleTree";
 import { contractBaseline } from "./db/models/Contract";
+import { phonebookBaseline } from "./db/models/Phonebook";
 import { execShellTest, didIdentityManagerCreateIdentity, didGenerateDidConfiguration, didVerifyWellKnownDidConfiguration } from "./blockchain/did";
 import { get_ws_provider, restartSubscriptions, sendBaselineBalance, deployContracts, sendCommit, sendBaselineTrack, sendBaselineGetTracked, sendBaselineVerifyAndPush, sendFirstLeaf, runTests, switchChain } from "./blockchain";
 
@@ -19,13 +20,41 @@ import { web3provider, wallet, txManager, waitRelayTx, deposit, getBalance } fro
 import * as shieldContract from "../artifacts/Shield.json";
 import * as verifierContract from "../artifacts/VerifierNoop.json";
 
-const saveEnv = async (settings: any) => {
+const saveEnv = async (settings: any, envfile: string) => {
 
-  fs.writeFile(path.join(__dirname, "../../.env"), settings,  (err) => {
+  fs.writeFile(path.join(__dirname, envfile), settings,  (err) => {
     if (err) {
         return logger.error(err);
     }
     logger.info(".env file created!");
+  });
+
+}
+
+const savePhonebookEntry = async (entryInfo: any) => {
+
+  if (!entryInfo) {
+    logger.error("No domain to save...");
+    return false;
+  }
+
+  const newPhonebook = new phonebookBaseline({
+    name: entryInfo.name, // entity name
+    network: entryInfo.network, // did network
+    domain: entryInfo.domain, // did domain
+    dididentity: entryInfo.dididentity, // did identity
+    status: entryInfo.status, // did verification status
+    active: true
+  });
+
+  await newPhonebook.save((err) => {
+    if (err) {
+      logger.error(err);
+      return false;
+    }
+    // saved!
+    logger.info(`[ ${entryInfo.name} ] domain added to phonebook...`);
+    return true;
   });
 
 }
@@ -191,7 +220,7 @@ const main = async () => {
   });
 
 
-  app.get('/did-generate', async (req: any, res: any) => {
+  app.post('/did-generate', async (req: any, res: any) => {
 
     const execInfo = req.body;
 
@@ -205,21 +234,21 @@ const main = async () => {
   });
 
 
-  app.get('/did-create-identity', async (req: any, res: any) => {
+  app.post('/did-create-identity', async (req: any, res: any) => {
 
-    const execInfo = '{}';
+    const execInfo = req.body ? req.body : '{}';
 
     if (!execInfo) {
       logger.error("No  command to execute...");
       return false;
     }
-    const result = await didIdentityManagerCreateIdentity(execInfo);
+    const result = await didIdentityManagerCreateIdentity(execInfo.domain);
 
     res.send(result || {});
   });
 
 
-  app.get('/did-verify', async (req: any, res: any) => {
+  app.post('/did-verify', async (req: any, res: any) => {
 
     const execInfo = req.body;
 
@@ -230,6 +259,59 @@ const main = async () => {
     const result = await didVerifyWellKnownDidConfiguration(execInfo.domain);
 
     res.send(result || {});
+  });
+
+
+  app.post('/add-phonebook', async (req: any, res: any) => {
+
+    const entryInfo = req.body;
+
+    if (!entryInfo) {
+      logger.error("No domain to add...");
+      return false;
+    }
+    const resultDid = JSON.parse(await didVerifyWellKnownDidConfiguration(entryInfo.domain));
+    const result = '';
+    if (resultDid){
+      logger.debug(resultDid);
+      const phoneEntry = {
+        name: resultDid.domain,
+        network: resultDid.dids[0].split(':')[1] === 'key' ? '-key-' : resultDid.dids[0].split(':')[2], // did network
+        domain: resultDid.domain, // did domain
+        dididentity: resultDid.dids[0], // did identity
+        status: 'verified', // did verification status
+        active: true
+      }
+      await savePhonebookEntry(phoneEntry);
+      res.send(resultDid || {});
+      return true;
+    }
+
+    res.send(result || {});
+  });
+
+
+  // api for get merkle data from database
+  app.get("/remove-phonebook/:entryId", async (req: any, res: any) => {
+    await phonebookBaseline.deleteOne({_id: req.params.entryId}, (err: any, data: any) => {
+              if (err) {
+                  res.send(err);
+              } else {
+                  res.send(data || {});
+              }
+          });
+  });
+
+
+  // api for get merkle data from database
+  app.get("/get-phonebook", async (req: any, res: any) => {
+    await phonebookBaseline.find({}, (err: any, data: any) => {
+              if (err) {
+                  res.send(err);
+              } else {
+                  res.send(data || {});
+              }
+          });
   });
 
 
@@ -489,6 +571,91 @@ DATABASE_NAME="${settings.DATABASE_NAME}"
 # "besu": local, private besu network
 # "infura-gas": Infura's Managed Transaction (ITX) service
 # "infura": Infura's traditional jsonrpc API
+ETH_CLIENT_TYPE="${settings.LOCAL_ETH_CLIENT_TYPE}"
+
+# Local client endpoints
+# Websocket port
+# 8545: ganache
+# 8546: besu
+ETH_CLIENT_WS="${settings.LOCAL_ETH_CLIENT_WS}"
+ETH_CLIENT_HTTP="${settings.LOCAL_ETH_CLIENT_HTTP}"
+
+# Chain ID
+# 1: Mainnet
+# 3: Ropsten
+# 4: Rinkeby
+# 5: Goerli
+# 42: Kovan
+# 101010: Custom network (private ganache or besu network)
+CHAIN_ID=${settings.LOCAL_CHAIN_ID}
+
+# Ethereum account key-pair. Do not use in production
+WALLET_PRIVATE_KEY="${settings.LOCAL_WALLET_PRIVATE_KEY}"
+WALLET_PUBLIC_KEY="${settings.LOCAL_WALLET_PUBLIC_KEY}"
+`, "../../.env");
+
+// ##################### LIVE DEV
+saveEnv(`# Set to production when deploying to production
+NODE_ENV="development"
+LOG_LEVEL="debug"
+
+# Node.js server configuration
+SERVER_PORT=4001
+
+# MongoDB configuration for the JS client
+DATABASE_USER="${settings.DATABASE_USER}"
+DATABASE_PASSWORD="${settings.DATABASE_PASSWORD}"
+DATABASE_HOST="${settings.DATABASE_HOST}"
+DATABASE_NAME="${settings.DATABASE_NAME}"
+
+# Ethereum client
+# "ganache": local, private ganache network
+# "besu": local, private besu network
+# "infura-gas": Infura's Managed Transaction (ITX) service
+# "infura": Infura's traditional jsonrpc API
+ETH_CLIENT_TYPE="${settings.LOCAL_ETH_CLIENT_TYPE}"
+
+# Local client endpoints
+# Websocket port
+# 8545: ganache
+# 8546: besu
+ETH_CLIENT_WS="${settings.LOCAL_ETH_CLIENT_WS}"
+ETH_CLIENT_HTTP="${settings.LOCAL_ETH_CLIENT_HTTP}"
+
+# Chain ID
+# 1: Mainnet
+# 3: Ropsten
+# 4: Rinkeby
+# 5: Goerli
+# 42: Kovan
+# 101010: Custom network (private ganache or besu network)
+CHAIN_ID=${settings.LOCAL_CHAIN_ID}
+
+# Ethereum account key-pair. Do not use in production
+WALLET_PRIVATE_KEY="${settings.LOCAL_WALLET_PRIVATE_KEY}"
+WALLET_PUBLIC_KEY="${settings.LOCAL_WALLET_PUBLIC_KEY}"
+`, "../../.env.localdev");
+
+
+// ##################### LIVE ENV
+saveEnv(`# Set to production when deploying to production
+NODE_ENV="development"
+LOG_LEVEL="debug"
+
+# Node.js server configuration
+SERVER_PORT=4001
+
+# MongoDB configuration for the JS client
+DATABASE_USER="${settings.DATABASE_USER}"
+DATABASE_PASSWORD="${settings.DATABASE_PASSWORD}"
+DATABASE_HOST="${settings.DATABASE_HOST}"
+DATABASE_NAME="${settings.DATABASE_NAME}"
+
+# Ethereum client
+# "ganache": local, private ganache network
+# "besu": local, private besu network
+# "infura-gas": Infura's Managed Transaction (ITX) service
+# "infura": Infura's traditional jsonrpc API
 ETH_CLIENT_TYPE="${settings.ETH_CLIENT_TYPE}"
 
 # Infura key
@@ -513,9 +680,11 @@ CHAIN_ID=${settings.CHAIN_ID}
 # Ethereum account key-pair. Do not use in production
 WALLET_PRIVATE_KEY="${settings.WALLET_PRIVATE_KEY}"
 WALLET_PUBLIC_KEY="${settings.WALLET_PUBLIC_KEY}"
-`);
+`, "../../.env.network");
+
     res.sendStatus(200);
   });
+
 
   // Single endpoint to handle all JSON-RPC requests
   app.post("/jsonrpc", async (req: any, res: any, next: any) => {

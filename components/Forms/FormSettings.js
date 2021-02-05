@@ -205,7 +205,13 @@ export default class FormSettings extends React.Component {
             ETH_CLIENT_HTTP: http_provider ? http_provider : ETH_CLIENT_HTTP,
             CHAIN_ID: (ETH_CLIENT_TYPE === 'besu' || ETH_CLIENT_TYPE === 'ganache') ? 101010 : CHAIN_ID,
             WALLET_PRIVATE_KEY: WALLET_PRIVATE_KEY,
-            WALLET_PUBLIC_KEY: WALLET_PUBLIC_KEY
+            WALLET_PUBLIC_KEY: WALLET_PUBLIC_KEY,
+            LOCAL_ETH_CLIENT_TYPE: LOCAL_ETH_CLIENT_TYPE,
+            LOCAL_ETH_CLIENT_WS: LOCAL_ETH_CLIENT_WS,
+            LOCAL_ETH_CLIENT_HTTP: LOCAL_ETH_CLIENT_HTTP,
+            LOCAL_CHAIN_ID: 101010,
+            LOCAL_WALLET_PRIVATE_KEY: LOCAL_WALLET_PRIVATE_KEY,
+            LOCAL_WALLET_PUBLIC_KEY: LOCAL_WALLET_PUBLIC_KEY
             })
             .then((response) => {
                 //access the resp here....
@@ -226,6 +232,12 @@ export default class FormSettings extends React.Component {
                     CHAIN_ID: CHAIN_ID,
                     WALLET_PRIVATE_KEY: WALLET_PRIVATE_KEY,
                     WALLET_PUBLIC_KEY: WALLET_PUBLIC_KEY,
+                    LOCAL_ETH_CLIENT_TYPE: LOCAL_ETH_CLIENT_TYPE,
+                    LOCAL_ETH_CLIENT_WS: LOCAL_ETH_CLIENT_WS,
+                    LOCAL_ETH_CLIENT_HTTP: LOCAL_ETH_CLIENT_HTTP,
+                    LOCAL_CHAIN_ID: 101010,
+                    LOCAL_WALLET_PRIVATE_KEY: LOCAL_WALLET_PRIVATE_KEY,
+                    LOCAL_WALLET_PUBLIC_KEY: LOCAL_WALLET_PUBLIC_KEY,
                     status: payload,
                     errorLabelHidden: true
                 });
@@ -259,6 +271,12 @@ export default class FormSettings extends React.Component {
             CHAIN_ID,
             WALLET_PRIVATE_KEY,
             WALLET_PUBLIC_KEY,
+            LOCAL_ETH_CLIENT_TYPE,
+            LOCAL_ETH_CLIENT_WS,
+            LOCAL_ETH_CLIENT_HTTP,
+            LOCAL_CHAIN_ID,
+            LOCAL_WALLET_PRIVATE_KEY,
+            LOCAL_WALLET_PUBLIC_KEY,
             errorLabel
         } = this.state;
 
@@ -383,7 +401,7 @@ export default class FormSettings extends React.Component {
                         >
                             ETHEREUM CLIENT TYPE
                         </label>
-                        <select name="ETH_CLIENT_TYPE" value={ETH_CLIENT_TYPE} onChange={this.onChange} className="form-select block px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150">
+                        <select name="LOCAL_ETH_CLIENT_TYPE" value={LOCAL_ETH_CLIENT_TYPE} onChange={this.onChange} className="form-select block px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150">
                             <option value="besu">Besu</option>
                             <option value="ganache">Ganache</option>
                         </select>
@@ -398,22 +416,22 @@ export default class FormSettings extends React.Component {
                             CHAIN ID
                         </label>
                         <select 
-                            name="CHAIN_ID" 
-                            value={ETH_CLIENT_TYPE === 'besu' || ETH_CLIENT_TYPE === 'ganache' ? 101010 : CHAIN_ID}
+                            name="LOCAL_CHAIN_ID" 
+                            value={101010}
                             onChange={this.onChange} 
-                            className={ETH_CLIENT_TYPE === 'besu' || ETH_CLIENT_TYPE === 'ganache' ? "form-select block px-3 py-3 placeholder-gray-400 text-gray-700 bg-gray-300 rounded shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150" : "form-select block px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"}
+                            className={LOCAL_ETH_CLIENT_TYPE === 'besu' || LOCAL_ETH_CLIENT_TYPE === 'ganache' ? "form-select block px-3 py-3 placeholder-gray-400 text-gray-700 bg-gray-300 rounded shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150" : "form-select block px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"}
                             >
                             <option value="101010">Ganache or Besu (101010)</option>
                         </select>
                         <input
-                            name="ETH_CLIENT_WS" 
+                            name="LOCAL_ETH_CLIENT_WS" 
                             type="hidden"
-                            value={ETH_CLIENT_WS}
+                            value={LOCAL_ETH_CLIENT_WS}
                         />
                         <input
-                            name="ETH_CLIENT_HTTP" 
+                            name="LOCAL_ETH_CLIENT_HTTP" 
                             type="hidden"
-                            value={ETH_CLIENT_WS}
+                            value={LOCAL_ETH_CLIENT_WS}
                         />                        
                         </div>
                     </div>
@@ -447,8 +465,8 @@ export default class FormSettings extends React.Component {
                             WALLET PRIVATE KEY
                         </label>
                         <input
-                            name="WALLET_PRIVATE_KEY" 
-                            value={WALLET_PRIVATE_KEY} 
+                            name="LOCAL_WALLET_PRIVATE_KEY" 
+                            value={LOCAL_WALLET_PRIVATE_KEY} 
                             onChange={this.onChange}
                             type="text"
                             className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
@@ -464,8 +482,8 @@ export default class FormSettings extends React.Component {
                             WALLET PUBLIC KEY
                         </label>
                         <input
-                            name="WALLET_PUBLIC_KEY" 
-                            value={WALLET_PUBLIC_KEY} 
+                            name="LOCAL_WALLET_PUBLIC_KEY" 
+                            value={LOCAL_WALLET_PUBLIC_KEY} 
                             onChange={this.onChange}
                             type="text"
                             className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
@@ -501,8 +519,6 @@ export default class FormSettings extends React.Component {
                         <select name="ETH_CLIENT_TYPE" value={ETH_CLIENT_TYPE} onChange={this.onChange} className="form-select block px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150">
                             <option value="infura">Infura</option>
                             <option value="infura-gas">Infura-Gas</option>
-                            <option value="besu">Besu</option>
-                            <option value="ganache">Ganache</option>
                         </select>
                         </div>
                     </div>
@@ -515,12 +531,11 @@ export default class FormSettings extends React.Component {
                             INFURA ID
                         </label>
                         <input
-                            disabled={ETH_CLIENT_TYPE === 'besu' || ETH_CLIENT_TYPE === 'ganache' ? 'disabled' : ''}
                             name="INFURA_ID"
-                            value={ETH_CLIENT_TYPE === 'besu' || ETH_CLIENT_TYPE === 'ganache' ? '' : INFURA_ID} 
+                            value={INFURA_ID} 
                             onChange={this.onChange}                        
                             type="text"
-                            className={ETH_CLIENT_TYPE === 'besu' || ETH_CLIENT_TYPE === 'ganache' ? "px-3 py-3 placeholder-gray-400 text-gray-700 bg-gray-300 rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150" : "px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"}
+                            className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
                         />
                         </div>
                     </div>
@@ -534,16 +549,14 @@ export default class FormSettings extends React.Component {
                         </label>
                         <select 
                             name="CHAIN_ID" 
-                            value={ETH_CLIENT_TYPE === 'besu' || ETH_CLIENT_TYPE === 'ganache' ? 101010 : CHAIN_ID} 
-                            disabled={ETH_CLIENT_TYPE === 'besu' || ETH_CLIENT_TYPE === 'ganache' ? 'disabled' : ''}
+                            value={CHAIN_ID} 
                             onChange={this.onChange} 
-                            className={ETH_CLIENT_TYPE === 'besu' || ETH_CLIENT_TYPE === 'ganache' ? "form-select block px-3 py-3 placeholder-gray-400 text-gray-700 bg-gray-300 rounded shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150" : "form-select block px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"}
+                            className="form-select block px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
                             >
                             <option value="1">Mainnet (1)</option>
                             <option value="3">Ropsten (3)</option>
                             <option value="5">Goerli (5)</option>
                             <option value="42">Kovan (42)</option>
-                            <option value="101010">Ganache or Besu (101010)</option>
                         </select>
                         <input
                             name="ETH_CLIENT_WS" 
@@ -556,22 +569,7 @@ export default class FormSettings extends React.Component {
                             value={ETH_CLIENT_WS}
                         />                        
                         </div>
-                    </div>
-                    {/*<div className="w-full lg:w-2/12 px-4">
-                        <div className="relative w-full mb-3">
-                        <label
-                            className="block uppercase text-gray-700 text-xs font-bold mb-2"
-                            htmlFor="grid-password"
-                        >
-                            CHAIN ID
-                        </label>
-                        <input
-                            type="number"
-                            className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
-                            defaultValue={wallet.chainId}
-                        />
-                        </div>
-                    </div>*/}          
+                    </div>          
                     </div>
 
                     <h6 className="text-gray-500 text-sm mt-3 mb-6 font-bold uppercase">

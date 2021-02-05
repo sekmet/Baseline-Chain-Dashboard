@@ -1,6 +1,7 @@
 import React, { useEffect, useState }  from "react";
 import { useRouter } from 'next/router';
 import dotenv from "dotenv";
+import useSwr from 'swr';
 import { useUser } from '../components/Utils/useUser';
 import { isWalletConnected } from '../components/Utils/isWalletConnected';
 import Iframe from '../components/Utils/Iframe';
@@ -21,6 +22,8 @@ const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function Index() {
   // Here you would fetch and return the user
+  const { data: network, error: netError } = useSwr('http://api.baseline.test/network-mode');
+
   const { user, status, loading } = useUser();
   const router = useRouter();
   const [contractShieldLocal, setContractShieldLocal] = useState('');
@@ -41,7 +44,7 @@ export default function Index() {
 
   return (
     <>
-      <div className="flex flex-wrap">
+      <div className="flex flex-wrap" style={{minHeight: (network === 101010) ? '589px' : '150px'}}>
         <div className="w-full xl:w-8/12 mb-12 xl:mb-0 px-4">
           <CardContracts title="Contracts [ Besu / Ganache Local ]" network="local" setContractShield={setContractShieldLocal}/>
         </div>
@@ -50,7 +53,7 @@ export default function Index() {
         </div>        
       </div>
 
-      <div className="flex flex-wrap">
+      { network !== 101010 ? <div className="flex flex-wrap">
         <div className="w-full xl:w-8/12 mb-12 xl:mb-0 px-4">
           <CardContracts title="Contracts Infura [ Goerli Network ]" network="goerli" walletAddress={user} setContractShield={setContractShield} />
         </div>
@@ -62,7 +65,7 @@ export default function Index() {
         {process.env.NODE_ENV === 'production' ? <Iframe source={'./baseline-commit-mgr-tests-report.html'} /> : ''}
       </div>
 
-      </div>
+      </div> : '' }
     </>
   );
 }

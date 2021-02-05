@@ -14,13 +14,13 @@ export default function Didgenerator() {
     <>
       <div className="flex flex-wrap">
       <div className="w-full lg:w-12/12 px-4">
+        <CardDidVerifyIdentity />
+      </div>
+      <div className="w-full lg:w-12/12 px-4">
           <CardDidCreateIdentity />
         </div>
       <div className="w-full lg:w-12/12 px-4">
         <CardDidGenerator />
-      </div>
-      <div className="w-full lg:w-12/12 px-4">
-        <CardDidVerifyIdentity />
       </div>
       </div>
     </>

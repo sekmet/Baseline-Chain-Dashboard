@@ -1,11 +1,20 @@
 import React from "react";
 import PropTypes from "prop-types";
+import axios from "axios";
+import { Alert } from "../Utils/Alert";
+import useSwr from 'swr';
+import { addPhonebook } from '../Utils/Phonebook';
 
 // components
 
-import TableDropdown from "components/Dropdowns/TableDropdown.js";
+import PhonebookDropdown from "components/Dropdowns/PhonebookDropdown.js";
+
+const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function CardPhonebook({ color }) {
+
+  const { data, error } = useSwr(`http://api.baseline.test/get-phonebook`, { refreshInterval: 3000, fetcher: fetcher });
+
   return (
     <>
       <div
@@ -30,6 +39,7 @@ export default function CardPhonebook({ color }) {
               <button
                 className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                 type="button"
+                onClick={() => addPhonebook()}
               >
                 New Entry
               </button>
@@ -37,7 +47,7 @@ export default function CardPhonebook({ color }) {
           </div>
         </div>   
 
-        <div className="block w-full overflow-x-auto">
+        <div className="block w-full overflow-x-auto" style={{ minHeight: "436px"}}>
           {/* Phonebook table */}
           <table className="items-center w-full bg-transparent border-collapse">
             <thead>
@@ -93,11 +103,13 @@ export default function CardPhonebook({ color }) {
               </tr>
             </thead>
             <tbody>
-              <tr>
+            {data && data.length ?
+              data.map((entry) => 
+              <tr key={entry._id}>
                 <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4 text-left flex items-center">
                   <img
-                    src={require("assets/img/bootstrap.jpg")}
-                    className="h-12 w-12 bg-white rounded-full border"
+                    src={require("assets/img/identity.svg")}
+                    className="h-12 w-12 p-2 bg-white rounded-full border"
                     alt="..."
                   ></img>{" "}
                   <span
@@ -106,141 +118,28 @@ export default function CardPhonebook({ color }) {
                       +(color === "light" ? "text-gray-700" : "text-white")
                     }
                   >
-                    open4g.com
+                    <a href={`https://${entry.domain}`} target="_blank">{entry.domain}</a>
                   </span>
                 </th>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                    did:ethr:goerli:0xc025e559f20e39b61a1c1d53a780cf469f913e48
+                  <a href={`https://${entry.domain}`} target="_blank">{entry.dididentity}</a>
                 </td>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                    Goerli Testnet
+                    {entry.network}
                 </td>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                  <i className="fas fa-circle text-orange-500 mr-2"></i> pending
+                  <i className={entry.status === 'verified' ? "fas fa-circle text-green-500 mr-2" : "fas fa-circle text-orange-500 mr-2"}></i> {entry.status}
                 </td>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4 text-right">
-                  <TableDropdown />
+                  <PhonebookDropdown entryId={entry._id} />
                 </td>
-              </tr>
+              </tr> )
+              :               
               <tr>
-                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4 text-left flex items-center">
-                  <img
-                    src={require("assets/img/angular.jpg")}
-                    className="h-12 w-12 bg-white rounded-full border"
-                    alt="..."
-                  ></img>{" "}
-                  <span
-                    className={
-                      "ml-3 font-bold " +
-                      +(color === "light" ? "text-gray-700" : "text-white")
-                    }
-                  >
-                    tailwindpower.netlify.app
-                  </span>
-                </th>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                did:ethr:goerli:0x40d9c3ae688a6f40df382cef755f5991a5489a69
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                    Goerli Testnet
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                  <i className="fas fa-circle text-green-500 mr-2"></i>{" "}
-                  completed
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4 text-right">
-                  <TableDropdown />
-                </td>
-              </tr>
-              <tr>
-                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4 text-left flex items-center">
-                  <img
-                    src={require("assets/img/sketch.jpg")}
-                    className="h-12 w-12 bg-white rounded-full border"
-                    alt="..."
-                  ></img>{" "}
-                  <span
-                    className={
-                      "ml-3 font-bold " +
-                      +(color === "light" ? "text-gray-700" : "text-white")
-                    }
-                  >
-                    Black Dashboard Sketch
-                  </span>
-                </th>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                  $3,150 USD
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                    Goerli Testnet
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                  <i className="fas fa-circle text-red-500 mr-2"></i> delayed
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4 text-right">
-                  <TableDropdown />
-                </td>
-              </tr>
-              <tr>
-                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4 text-left flex items-center">
-                  <img
-                    src={require("assets/img/react.jpg")}
-                    className="h-12 w-12 bg-white rounded-full border"
-                    alt="..."
-                  ></img>{" "}
-                  <span
-                    className={
-                      "ml-3 font-bold " +
-                      +(color === "light" ? "text-gray-700" : "text-white")
-                    }
-                  >
-                    React Material Dashboard
-                  </span>
-                </th>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                  $4,400 USD
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                    Goerli Testnet
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                  <i className="fas fa-circle text-teal-500 mr-2"></i> on
-                  schedule
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4 text-right">
-                  <TableDropdown />
-                </td>
-              </tr>
-              <tr>
-                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4 text-left flex items-center">
-                  <img
-                    src={require("assets/img/vue.jpg")}
-                    className="h-12 w-12 bg-white rounded-full border"
-                    alt="..."
-                  ></img>{" "}
-                  <span
-                    className={
-                      "ml-3 font-bold " +
-                      +(color === "light" ? "text-gray-700" : "text-white")
-                    }
-                  >
-                    React Material Dashboard
-                  </span>
-                </th>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                  $2,200 USD
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                    Goerli Testnet
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                  <i className="fas fa-circle text-green-500 mr-2"></i>{" "}
-                  completed
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4 text-right">
-                  <TableDropdown />
-                </td>
-              </tr>
+              <td colSpan="4" className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-center text-xs whitespace-no-wrap p-4">
+                <h3>No entries available</h3>
+            </td>
+            </tr>}
             </tbody>
           </table>
         </div>

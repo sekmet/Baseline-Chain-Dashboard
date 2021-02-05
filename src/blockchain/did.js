@@ -12,10 +12,10 @@ export const execShellTest = async () => {
     return result;
 }
 
-export const didIdentityManagerCreateIdentity = async (params) => {
+export const didIdentityManagerCreateIdentity = async (domain) => {
 
     shell.cd('did');
-    const result = await shell.exec(`yarn daf execute -m identityManagerCreateIdentity -a "${params}"`);
+    const result = await shell.exec(`yarn daf execute -m identityManagerCreateIdentity -a '{"domain":"${domain}"}'`);
     // Run external tool synchronously
     if (result.code !== 0) {
         shell.echo('Error: DAF identityManagerCreateIdentity failed');

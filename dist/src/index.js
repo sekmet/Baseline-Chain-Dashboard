@@ -41,6 +41,7 @@ const logger_1 = require("./logger");
 const db_1 = require("./db");
 const MerkleTree_1 = require("./db/models/MerkleTree");
 const Contract_1 = require("./db/models/Contract");
+const Phonebook_1 = require("./db/models/Phonebook");
 const did_1 = require("./blockchain/did");
 const blockchain_1 = require("./blockchain");
 const fs = __importStar(require("fs"));
@@ -48,12 +49,35 @@ const path = __importStar(require("path"));
 const chain_1 = require("./blockchain/chain");
 const shieldContract = __importStar(require("../artifacts/Shield.json"));
 const verifierContract = __importStar(require("../artifacts/VerifierNoop.json"));
-const saveEnv = (settings) => __awaiter(void 0, void 0, void 0, function* () {
-    fs.writeFile(path.join(__dirname, "../../.env"), settings, (err) => {
+const saveEnv = (settings, envfile) => __awaiter(void 0, void 0, void 0, function* () {
+    fs.writeFile(path.join(__dirname, envfile), settings, (err) => {
         if (err) {
             return logger_1.logger.error(err);
         }
         logger_1.logger.info(".env file created!");
+    });
+});
+const savePhonebookEntry = (entryInfo) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!entryInfo) {
+        logger_1.logger.error("No domain to save...");
+        return false;
+    }
+    const newPhonebook = new Phonebook_1.phonebookBaseline({
+        name: entryInfo.name,
+        network: entryInfo.network,
+        domain: entryInfo.domain,
+        dididentity: entryInfo.dididentity,
+        status: entryInfo.status,
+        active: true
+    });
+    yield newPhonebook.save((err) => {
+        if (err) {
+            logger_1.logger.error(err);
+            return false;
+        }
+        // saved!
+        logger_1.logger.info(`[ ${entryInfo.name} ] domain added to phonebook...`);
+        return true;
     });
 });
 const saveContract = (contractInfo) => __awaiter(void 0, void 0, void 0, function* () {
@@ -182,7 +206,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         const result = yield blockchain_1.switchChain(execInfo.network);
         res.send(result || {});
     }));
-    app.get('/did-generate', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    app.post('/did-generate', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const execInfo = req.body;
         if (!execInfo) {
             logger_1.logger.error("No  command to execute...");
@@ -191,16 +215,16 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         const result = yield did_1.didGenerateDidConfiguration(execInfo.did, execInfo.domain);
         res.send(result || {});
     }));
-    app.get('/did-create-identity', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const execInfo = '{}';
+    app.post('/did-create-identity', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const execInfo = req.body ? req.body : '{}';
         if (!execInfo) {
             logger_1.logger.error("No  command to execute...");
             return false;
         }
-        const result = yield did_1.didIdentityManagerCreateIdentity(execInfo);
+        const result = yield did_1.didIdentityManagerCreateIdentity(execInfo.domain);
         res.send(result || {});
     }));
-    app.get('/did-verify', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    app.post('/did-verify', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const execInfo = req.body;
         if (!execInfo) {
             logger_1.logger.error("No  command to execute...");
@@ -208,6 +232,52 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         const result = yield did_1.didVerifyWellKnownDidConfiguration(execInfo.domain);
         res.send(result || {});
+    }));
+    app.post('/add-phonebook', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const entryInfo = req.body;
+        if (!entryInfo) {
+            logger_1.logger.error("No domain to add...");
+            return false;
+        }
+        const resultDid = JSON.parse(yield did_1.didVerifyWellKnownDidConfiguration(entryInfo.domain));
+        const result = '';
+        if (resultDid) {
+            logger_1.logger.debug(resultDid);
+            const phoneEntry = {
+                name: resultDid.domain,
+                network: resultDid.dids[0].split(':')[1] === 'key' ? '-key-' : resultDid.dids[0].split(':')[2],
+                domain: resultDid.domain,
+                dididentity: resultDid.dids[0],
+                status: 'verified',
+                active: true
+            };
+            yield savePhonebookEntry(phoneEntry);
+            res.send(resultDid || {});
+            return true;
+        }
+        res.send(result || {});
+    }));
+    // api for get merkle data from database
+    app.get("/remove-phonebook/:entryId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        yield Phonebook_1.phonebookBaseline.deleteOne({ _id: req.params.entryId }, (err, data) => {
+            if (err) {
+                res.send(err);
+            }
+            else {
+                res.send(data || {});
+            }
+        });
+    }));
+    // api for get merkle data from database
+    app.get("/get-phonebook", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        yield Phonebook_1.phonebookBaseline.find({}, (err, data) => {
+            if (err) {
+                res.send(err);
+            }
+            else {
+                res.send(data || {});
+            }
+        });
     }));
     // api for get merkle data from database
     app.get("/getmerkletrees", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -404,6 +474,88 @@ DATABASE_NAME="${settings.DATABASE_NAME}"
 # "besu": local, private besu network
 # "infura-gas": Infura's Managed Transaction (ITX) service
 # "infura": Infura's traditional jsonrpc API
+ETH_CLIENT_TYPE="${settings.LOCAL_ETH_CLIENT_TYPE}"
+
+# Local client endpoints
+# Websocket port
+# 8545: ganache
+# 8546: besu
+ETH_CLIENT_WS="${settings.LOCAL_ETH_CLIENT_WS}"
+ETH_CLIENT_HTTP="${settings.LOCAL_ETH_CLIENT_HTTP}"
+
+# Chain ID
+# 1: Mainnet
+# 3: Ropsten
+# 4: Rinkeby
+# 5: Goerli
+# 42: Kovan
+# 101010: Custom network (private ganache or besu network)
+CHAIN_ID=${settings.LOCAL_CHAIN_ID}
+
+# Ethereum account key-pair. Do not use in production
+WALLET_PRIVATE_KEY="${settings.LOCAL_WALLET_PRIVATE_KEY}"
+WALLET_PUBLIC_KEY="${settings.LOCAL_WALLET_PUBLIC_KEY}"
+`, "../../.env");
+        // ##################### LIVE DEV
+        saveEnv(`# Set to production when deploying to production
+NODE_ENV="development"
+LOG_LEVEL="debug"
+
+# Node.js server configuration
+SERVER_PORT=4001
+
+# MongoDB configuration for the JS client
+DATABASE_USER="${settings.DATABASE_USER}"
+DATABASE_PASSWORD="${settings.DATABASE_PASSWORD}"
+DATABASE_HOST="${settings.DATABASE_HOST}"
+DATABASE_NAME="${settings.DATABASE_NAME}"
+
+# Ethereum client
+# "ganache": local, private ganache network
+# "besu": local, private besu network
+# "infura-gas": Infura's Managed Transaction (ITX) service
+# "infura": Infura's traditional jsonrpc API
+ETH_CLIENT_TYPE="${settings.LOCAL_ETH_CLIENT_TYPE}"
+
+# Local client endpoints
+# Websocket port
+# 8545: ganache
+# 8546: besu
+ETH_CLIENT_WS="${settings.LOCAL_ETH_CLIENT_WS}"
+ETH_CLIENT_HTTP="${settings.LOCAL_ETH_CLIENT_HTTP}"
+
+# Chain ID
+# 1: Mainnet
+# 3: Ropsten
+# 4: Rinkeby
+# 5: Goerli
+# 42: Kovan
+# 101010: Custom network (private ganache or besu network)
+CHAIN_ID=${settings.LOCAL_CHAIN_ID}
+
+# Ethereum account key-pair. Do not use in production
+WALLET_PRIVATE_KEY="${settings.LOCAL_WALLET_PRIVATE_KEY}"
+WALLET_PUBLIC_KEY="${settings.LOCAL_WALLET_PUBLIC_KEY}"
+`, "../../.env.localdev");
+        // ##################### LIVE ENV
+        saveEnv(`# Set to production when deploying to production
+NODE_ENV="development"
+LOG_LEVEL="debug"
+
+# Node.js server configuration
+SERVER_PORT=4001
+
+# MongoDB configuration for the JS client
+DATABASE_USER="${settings.DATABASE_USER}"
+DATABASE_PASSWORD="${settings.DATABASE_PASSWORD}"
+DATABASE_HOST="${settings.DATABASE_HOST}"
+DATABASE_NAME="${settings.DATABASE_NAME}"
+
+# Ethereum client
+# "ganache": local, private ganache network
+# "besu": local, private besu network
+# "infura-gas": Infura's Managed Transaction (ITX) service
+# "infura": Infura's traditional jsonrpc API
 ETH_CLIENT_TYPE="${settings.ETH_CLIENT_TYPE}"
 
 # Infura key
@@ -428,7 +580,7 @@ CHAIN_ID=${settings.CHAIN_ID}
 # Ethereum account key-pair. Do not use in production
 WALLET_PRIVATE_KEY="${settings.WALLET_PRIVATE_KEY}"
 WALLET_PUBLIC_KEY="${settings.WALLET_PUBLIC_KEY}"
-`);
+`, "../../.env.network");
         res.sendStatus(200);
     }));
     // Single endpoint to handle all JSON-RPC requests

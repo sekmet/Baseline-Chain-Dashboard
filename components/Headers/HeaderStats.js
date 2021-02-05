@@ -28,6 +28,8 @@ const switchChain = async (network) => {
         const currentChain = response.data;
         console.log(`Current Chain: ${currentChain}`);
         Alert('success', 'Network Mode Switched...', `Commitment manager connected to ${network} [${currentChain}] network..`);
+        sleep(5);
+        window.location.reload();
         return currentChain;
     })
     .catch((error) => {

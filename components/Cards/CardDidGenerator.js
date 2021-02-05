@@ -1,6 +1,29 @@
 import React from "react";
 
-export default function CardDidGenerator(props) {
+
+export default class CardDidGenerator extends React.Component {
+
+  //const wallet = useWallet();  
+  constructor(props) {
+    super(props);
+  
+
+  this.state = {
+    useActive: false,
+    domainname: ''
+  }
+
+  }
+
+ onChange = (e) => {
+      //console.log(`${e.target.name} = ${e.target.value}`);
+      this.setState({[e.target.name]: e.target.value});
+      this.setState({useActive: true});    
+  }
+
+  render() {
+
+    const { domainname, useActive } = this.state;
 
   return (
     <>
@@ -9,7 +32,11 @@ export default function CardDidGenerator(props) {
           <div className="text-center flex justify-between">
             <h6 className="text-gray-800 text-xl font-bold">DID Configuration Generator</h6>
             <button
-              className="bg-gray-800 active:bg-green-700 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+              className={ useActive
+                ? "bg-gray-800 active:bg-gray-700 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+                : "bg-gray-200 text-white font-bold uppercase text-xs px-4 py-2 rounded mr-1"
+              }
+              disabled={useActive ? '' : 'disabled'}
               type="button"
               onClick={() => props.didgen()}
             >
@@ -32,7 +59,9 @@ export default function CardDidGenerator(props) {
                     DID Identity (ex. did:ethr:goerli:0xc025e559f2...)
                 </label>
                 <input
-                    name="domainname" 
+                    name="domainname"
+                    onChange={this.onChange}
+                    value={domainname}
                     type="text"
                     className="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full ease-linear transition-all duration-150"
                 />
@@ -76,4 +105,6 @@ export default function CardDidGenerator(props) {
       </div>
     </>
   );
+}
+
 }

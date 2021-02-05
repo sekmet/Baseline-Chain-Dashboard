@@ -6,10 +6,11 @@ import { parse, stringify } from 'envfile';
 
 export default function commitMgrEnv() {
 
-    const fileEnv = readFileSync('./.env', 'utf-8');
+    const fileEnvLocal = readFileSync('./.env.localdev', 'utf-8');
+    const fileEnvLive = readFileSync('./.env.network', 'utf-8');
     //console.log("ENV ---- ", parse(fileEnv));
 
-    const {
+    /*const {
       NODE_ENV,
       LOG_LEVEL,
       SERVER_PORT,
@@ -23,25 +24,40 @@ export default function commitMgrEnv() {
       ETH_CLIENT_HTTP,
       CHAIN_ID,
       WALLET_PRIVATE_KEY,
-      WALLET_PUBLIC_KEY
-    } = parse(fileEnv);
+      WALLET_PUBLIC_KEY,
+      LOCAL_ETH_CLIENT_TYPE,
+      LOCAL_ETH_CLIENT_WS,
+      LOCAL_ETH_CLIENT_HTTP,
+      LOCAL_CHAIN_ID,
+      LOCAL_WALLET_PRIVATE_KEY,
+      LOCAL_WALLET_PUBLIC_KEY
+    } = parse(fileEnv);*/
+
+    const fileEnvParsed = parse(fileEnvLive);
+    const fileEnvLocalParsed = parse(fileEnvLocal);
   
     const regex = /['"]+/g;
     const updatedEnv = {
-      NodeEnv: NODE_ENV.replace(regex, ''),
-      LogLevel: LOG_LEVEL.replace(regex, ''),
-      ServerPort: SERVER_PORT.replace(regex, ''),
-      DatabaseUser: DATABASE_USER.replace(regex, ''),
-      DatabaseName: DATABASE_NAME.replace(regex, ''),
-      DatabasePassword: DATABASE_PASSWORD.replace(regex, ''),
-      DatabaseHost: DATABASE_HOST.replace(regex, ''),
-      EthClientType: ETH_CLIENT_TYPE.replace(regex, ''),
-      InfuraId: INFURA_ID ? INFURA_ID.replace(regex, '') : '',
-      EthClientWs: ETH_CLIENT_WS.replace(regex, ''),
-      EthClientHttp: ETH_CLIENT_HTTP.replace(regex, ''),
-      ChainId: CHAIN_ID.replace(regex, ''),
-      WalletPrivateKey: WALLET_PRIVATE_KEY.replace(regex, ''),
-      WalletPublicKey: WALLET_PUBLIC_KEY.replace(regex, '')
+      NodeEnv: fileEnvLocalParsed.NODE_ENV.replace(regex, ''),
+      LogLevel: fileEnvLocalParsed.LOG_LEVEL.replace(regex, ''),
+      ServerPort: fileEnvLocalParsed.SERVER_PORT.replace(regex, ''),
+      DatabaseUser: fileEnvLocalParsed.DATABASE_USER.replace(regex, ''),
+      DatabaseName: fileEnvLocalParsed.DATABASE_NAME.replace(regex, ''),
+      DatabasePassword: fileEnvLocalParsed.DATABASE_PASSWORD.replace(regex, ''),
+      DatabaseHost: fileEnvLocalParsed.DATABASE_HOST.replace(regex, ''),
+      EthClientType: fileEnvParsed.ETH_CLIENT_TYPE.replace(regex, ''),
+      InfuraId: fileEnvParsed.INFURA_ID ? fileEnvParsed.INFURA_ID.replace(regex, '') : '',
+      EthClientWs: fileEnvParsed.ETH_CLIENT_WS.replace(regex, ''),
+      EthClientHttp: fileEnvParsed.ETH_CLIENT_HTTP.replace(regex, ''),
+      ChainId: fileEnvParsed.CHAIN_ID.replace(regex, ''),
+      WalletPrivateKey: fileEnvParsed.WALLET_PRIVATE_KEY.replace(regex, ''),
+      WalletPublicKey: fileEnvParsed.WALLET_PUBLIC_KEY.replace(regex, ''),
+      LocalEthClientType: fileEnvLocalParsed.ETH_CLIENT_TYPE.replace(regex, ''),
+      LocalEthClientWs: fileEnvLocalParsed.ETH_CLIENT_WS.replace(regex, ''),
+      LocalEthClientHttp: fileEnvLocalParsed.ETH_CLIENT_HTTP.replace(regex, ''),
+      LocalChainId: fileEnvLocalParsed.CHAIN_ID.replace(regex, ''),
+      LocalWalletPrivateKey: fileEnvLocalParsed.WALLET_PRIVATE_KEY.replace(regex, ''),
+      LocalWalletPublicKey: fileEnvLocalParsed.WALLET_PUBLIC_KEY.replace(regex, '')
     };
   
     console.log("updatedEnv---- ", updatedEnv);

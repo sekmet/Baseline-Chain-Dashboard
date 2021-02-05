@@ -39,9 +39,9 @@ exports.execShellTest = () => __awaiter(void 0, void 0, void 0, function* () {
     }
     return result;
 });
-exports.didIdentityManagerCreateIdentity = (params) => __awaiter(void 0, void 0, void 0, function* () {
+exports.didIdentityManagerCreateIdentity = (domain) => __awaiter(void 0, void 0, void 0, function* () {
     shell.cd('did');
-    const result = yield shell.exec(`yarn daf execute -m identityManagerCreateIdentity -a "${params}"`);
+    const result = yield shell.exec(`yarn daf execute -m identityManagerCreateIdentity -a '{"domain":"${domain}"}'`);
     // Run external tool synchronously
     if (result.code !== 0) {
         shell.echo('Error: DAF identityManagerCreateIdentity failed');
