@@ -14,7 +14,7 @@ export default function Navbar(props) {
                 className="text-white text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-no-wrap uppercase"
                 href="#baseline-dashboard"
               >
-                <img src="/baseline_Horizontal-Logo-allWhite.svg" />
+                <img src="/baselineLogoMark-All-White.png" />
               </a>
             </Link>
             <button
