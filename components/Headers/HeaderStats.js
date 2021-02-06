@@ -69,7 +69,7 @@ export default function HeaderStats() {
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                 <CardStats
                   statSubtitle="COMMITMENTS"
-                  statTitle={commitments ? commitments.length : 0}
+                  statTitle={commitments ? commitments.length : "0"}
                   statArrow="up"
                   statPercent=" "
                   statPercentColor="text-blue-500"

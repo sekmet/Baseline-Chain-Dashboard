@@ -2,6 +2,10 @@
 
 ![Baseline Logo](./assets/img/baselineHorizontal-Logo-Full-Color.svg)
 
+## Video Demo
+[![Baseline Dashboard Demo](./baseline_dashboard_login.png)](https://youtu.be/Nm9v373pL0s)
+
+
 ## Requirements
 - docker and docker-compose
 - node / npm
