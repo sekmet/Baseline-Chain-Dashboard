@@ -1,6 +1,7 @@
 import React, { useState }  from "react";
 import axios from "axios";
 import { useWallet } from 'use-wallet';
+import { commitMgrServerUrl } from "../../configs/commit_mgr.env";
 
 /*
 export function useUser() {
@@ -15,7 +16,7 @@ export function useUser() {
 
 export function useContract() {
 
-  const contractsAvailable = axios.get('http://api.baseline.test/contracts-available')
+  const contractsAvailable = axios.get(`${commitMgrServerUrl}/contracts-available`)
     .then((response) => {
         //access the resp here....
         
