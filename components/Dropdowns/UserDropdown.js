@@ -2,6 +2,7 @@ import React from "react";
 import { ethers } from "ethers";
 import { useWallet } from 'use-wallet';
 import { createPopper } from "@popperjs/core";
+
 //import walletAvatar from "../Utils/Avatar";
 
 const UserDropdown = (props) => {  

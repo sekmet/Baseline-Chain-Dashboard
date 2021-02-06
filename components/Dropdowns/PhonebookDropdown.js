@@ -2,10 +2,11 @@ import React from "react";
 import axios from "axios";
 import { Alert } from "../Utils/Alert";
 import { createPopper } from "@popperjs/core";
+import { commitMgrServerUrl } from "../../configs/commit_mgr.env";
 
 const removeEntry = async (entryId) => {
 
-  return await axios.get(`http://api.baseline.test/remove-phonebook/${entryId}`)
+  return await axios.get(`${commitMgrServerUrl}/remove-phonebook/${entryId}`)
     .then((response) => {
         //access the resp here....
         console.log(`Status Phonebook : ${response.data}`);

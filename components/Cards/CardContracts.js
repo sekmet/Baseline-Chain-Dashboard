@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Alert, ConfirmAlert } from "../Utils/Alert";
 import useSwr from 'swr';
+import { commitMgrServerUrl } from "../../configs/commit_mgr.env";
 
 
 const deployContracts = async (network, senderAddress) => {
 
-  await axios.post('http://api.baseline.test/deploy-contracts', {
+  await axios.post(`${commitMgrServerUrl}/deploy-contracts`, {
       network: network,
       sender: senderAddress
     })
@@ -26,7 +27,7 @@ const deployContracts = async (network, senderAddress) => {
 
 const resetContracts = async () => {
 
-  await axios.post('http://api.baseline.test/reset-contracts')
+  await axios.post(`${commitMgrServerUrl}/reset-contracts`)
     .then((response) => {
         //access the resp here....
         console.log(`Status Contracts Reset: ${response.data}`);
@@ -49,7 +50,7 @@ export default function CardContracts({ title, network, walletAddress, setContra
 
   const contractsTitle = title ? title : "Contracts";
   const contractsNetwork = network ? network : "local";
-  const { data, error } = useSwr(`http://api.baseline.test/contracts/${contractsNetwork}`, { refreshInterval: 3000, fetcher: fetcher });
+  const { data, error } = useSwr(`${commitMgrServerUrl}/contracts/${contractsNetwork}`, { refreshInterval: 3000, fetcher: fetcher });
 
 
   if (data && data.length > 1)
@@ -124,7 +125,7 @@ export default function CardContracts({ title, network, walletAddress, setContra
                   {contract.name}
                 </th>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-no-wrap p-4">
-                  <a href={`https://${contract.network}.etherscan.io/address/${contract.address}`} target="_blank" className="text-black hover:text-green-500 font-semibold">
+                  <a href={network !== 'local' ? `https://${contract.network}.etherscan.io/address/${contract.address}` : `#${contract.address}`} target="_blank" className="text-black hover:text-green-500 font-semibold">
                       {contract.address}
                   </a>
                 </td>

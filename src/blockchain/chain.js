@@ -10,6 +10,7 @@ import shieldContract from "../../artifacts/Shield.json";
 dotenv.config();
 
 const commitMgrEndpoint = "http://api.baseline.test/jsonrpc";
+const commitMgrServerUrl = "http://api.baseline.test";
 
 export const web3provider = new ethers.providers.JsonRpcProvider(commitMgrEndpoint);
 export const wallet = new Wallet(process.env.WALLET_PRIVATE_KEY, web3provider);
@@ -76,7 +77,7 @@ let treeHeight = 2;
 
 let contractInfo;
 if (verifierContractAddress === undefined){
-const verifierAddress = await axios.post('http://api.baseline.test/deploy-verifier-contract', {
+const verifierAddress = await axios.post(`${commitMgrServerUrl}/deploy-verifier-contract`, {
     contractName: "Verifier.sol",
     deployedNetwork: network,
     sender: sender
@@ -147,7 +148,7 @@ await tx.wait();
 txHash = tx.hash;
 
 //################## Retrieve Shield.sol tx receipt
-const txDetails = await axios.post('http://api.baseline.test/jsonrpc', {
+const txDetails = await axios.post(`${commitMgrServerUrl}/jsonrpc`, {
   jsonrpc: "2.0",
   method: "eth_getTransactionReceipt",
   params: [txHash],
@@ -216,7 +217,7 @@ const txDetails = await axios.post('http://api.baseline.test/jsonrpc', {
   logger.debug(`TX Receipt Status: ${txReceipt.status}`);
 
 //################## Baseline_track should initiate merkle tree in db
-const initiateMerkle = await axios.post('http://api.baseline.test/jsonrpc', {
+const initiateMerkle = await axios.post(`${commitMgrServerUrl}/jsonrpc`, {
   jsonrpc: "2.0",
   method: "baseline_track",
   params: [shieldContractAddress],
@@ -236,7 +237,7 @@ const initiateMerkle = await axios.post('http://api.baseline.test/jsonrpc', {
 
 //#################### Baseline_getCommit should detect 1st leaf already in tree
 const leafIndex = 0;
-const baselineGetCommit = await axios.post('http://api.baseline.test/jsonrpc', {
+const baselineGetCommit = await axios.post(`${commitMgrServerUrl}/jsonrpc`, {
   jsonrpc: "2.0",
   method: "baseline_getCommit",
   params: [shieldContractAddress, leafIndex],
@@ -257,7 +258,7 @@ const baselineGetCommit = await axios.post('http://api.baseline.test/jsonrpc', {
   logger.debug(`Baseline_getCommit should detect 1st leaf already in tree: ${baselineGetCommit.txHash}`);
 
   //###################### baseline_getRoot returns root hash
-  const baselineGetRoot = await axios.post('http://api.baseline.test/jsonrpc', {
+  const baselineGetRoot = await axios.post(`${commitMgrServerUrl}/jsonrpc`, {
     jsonrpc: "2.0",
     method: "baseline_getRoot",
     params: [shieldContractAddress],
@@ -295,7 +296,7 @@ export const sendCommit = async (newCommitment, sender, shieldContractAddress, n
   const bufferCommitmentHash = Buffer.from(buffer);
   logger.debug(`newCommitmentHash: 0x${bufferCommitmentHash.toString('hex')}`);
   const newCommitmentHash = `0x${bufferCommitmentHash.toString('hex')}`;
-  const sendCommitLeaf = await axios.post('http://api.baseline.test/jsonrpc', {
+  const sendCommitLeaf = await axios.post(`${commitMgrServerUrl}/jsonrpc`, {
     jsonrpc: "2.0",
     method: "baseline_verifyAndPush",
     params: [sender, shieldContractAddress, proof, publicInputs, newCommitmentHash],
@@ -324,7 +325,7 @@ export const sendCommit = async (newCommitment, sender, shieldContractAddress, n
     });
 
   //###################### baseline_getRoot returns root hash
-  const baselineGetRoot = await axios.post('http://api.baseline.test/jsonrpc', {
+  const baselineGetRoot = await axios.post(`${commitMgrServerUrl}/jsonrpc`, {
     jsonrpc: "2.0",
     method: "baseline_getRoot",
     params: [shieldContractAddress],
@@ -382,7 +383,7 @@ export const sendFirstLeaf = async (sender, shieldContractAddress, network) => {
 //baseline_track should initiate merkle tree in db
 export const sendBaselineBalance = async (senderAddress) => {
 
-  return await axios.post('http://api.baseline.test/jsonrpc', {
+  return await axios.post(`${commitMgrServerUrl}/jsonrpc`, {
     jsonrpc: "2.0",
     method: "eth_getBalance",
     params: [
@@ -406,7 +407,7 @@ export const sendBaselineBalance = async (senderAddress) => {
 //baseline_track should initiate merkle tree in db
 export const sendBaselineTrack = async (contractAddress, network) => {
 
-  return await axios.post('http://api.baseline.test/jsonrpc', {
+  return await axios.post(`${commitMgrServerUrl}/jsonrpc`, {
       jsonrpc: "2.0",
       method: "baseline_track",
       params: [contractAddress],
@@ -427,7 +428,7 @@ export const sendBaselineTrack = async (contractAddress, network) => {
 //baseline_getTracked should return deployed contract
 export const sendBaselineGetTracked = async () => {
 
-  return await axios.post('http://api.baseline.test/jsonrpc', {
+  return await axios.post(`${commitMgrServerUrl}/jsonrpc`, {
       jsonrpc: "2.0",
       method: "baseline_getTracked",
       params: [],
@@ -451,7 +452,7 @@ export const sendBaselineVerifyAndPush = async (sender, contractAddress, network
   const proof = [5];
   const publicInputs = ["0x02d449a31fbb267c8f352e9968a79e3e5fc95c1bbeaa502fd6454ebde5a4bedc"]; // Sha256 hash of new commitment
   const newCommitment = "0x1111111111111111111111111111111111111111111111111111111111111115";
-  const res = await axios.post("http://api.baseline.test/jsonrpc", {
+  const res = await axios.post(`${commitMgrServerUrl}/jsonrpc`, {
     jsonrpc: "2.0",
     method: "baseline_verifyAndPush",
     params: [sender, contractAddress, proof, publicInputs, newCommitment],
@@ -490,7 +491,7 @@ export const runTests3 = async (senderAddress, network, saveContract) => {
   
   //################ Deploy Verifier Contract
   let contractInfo;
-  const verifierAddress = await axios.post('http://api.baseline.test/deploy-verifier-contract', {
+  const verifierAddress = await axios.post(`${commitMgrServerUrl}/deploy-verifier-contract`, {
       contractName: "Verifier.sol",
       deployedNetwork: network,
       sender: senderAddress
@@ -537,7 +538,7 @@ export const runTests3 = async (senderAddress, network, saveContract) => {
     });
 
   //############# Deploy Shield Contract
-  await axios.post('http://api.baseline.test/deploy-shield-contract', {
+  await axios.post(`${commitMgrServerUrl}/deploy-shield-contract`, {
     contractName: "Shield.sol",
     deployedNetwork: network,
     verifierAddress: verifierAddress,

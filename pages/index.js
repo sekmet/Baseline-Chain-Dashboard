@@ -2,6 +2,7 @@ import React, { useEffect, useState }  from "react";
 import { useRouter } from 'next/router';
 import dotenv from "dotenv";
 import useSwr from 'swr';
+import { commitMgrServerUrl } from "../../configs/commit_mgr.env";
 import { useUser } from '../components/Utils/useUser';
 import { isWalletConnected } from '../components/Utils/isWalletConnected';
 import Iframe from '../components/Utils/Iframe';
@@ -22,7 +23,7 @@ const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function Index() {
   // Here you would fetch and return the user
-  const { data: network, error: netError } = useSwr('http://api.baseline.test/network-mode');
+  const { data: network, error: netError } = useSwr(`${commitMgrServerUrl}/network-mode`);
 
   const { user, status, loading } = useUser();
   const router = useRouter();

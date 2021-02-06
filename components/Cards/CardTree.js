@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import TreeMerkle from '../Utils/TreeData';
 import { SendCommitment } from '../Utils/Commitment';
 import useSwr from 'swr';
+import { commitMgrServerUrl } from "../../configs/commit_mgr.env";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 // components
 export default function CardTree({ title, contractShield, walletAddress, network }) {
   const treeTitle = title ? title : "[DB] Merkle Tree";
 
-  const { data, error } = contractShield ? useSwr(`http://api.baseline.test/getmerkletree/${contractShield}_0`, { refreshInterval: 3000, fetcher: fetcher }) : {data:{}};
+  const { data, error } = contractShield ? useSwr(`${commitMgrServerUrl}/getmerkletree/${contractShield}_0`, { refreshInterval: 3000, fetcher: fetcher }) : {data:{}};
 
 
   return (

@@ -1,5 +1,6 @@
 import Swal from 'sweetalert2';
 import axios from "axios";
+import { commitMgrServerUrl } from "../../configs/commit_mgr.env";
 
 export function addPhonebook() {
 //icon, title, message, buttonText
@@ -26,7 +27,7 @@ export function addPhonebook() {
               )
             })*/
   
-            return await axios.post('http://api.baseline.test/add-phonebook', {
+            return await axios.post(`${commitMgrServerUrl}/add-phonebook`, {
                 domain: newEntry
               })
               .then((response) => {

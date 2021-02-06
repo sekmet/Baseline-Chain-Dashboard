@@ -3,6 +3,7 @@ import useSwr from 'swr';
 import axios from "axios";
 import { Alert } from "../Utils/Alert";
 import { AlertSwitcher } from "../Utils/Switcher";
+import { commitMgrServerUrl } from "../../configs/commit_mgr.env";
 //import { useWallet } from 'use-wallet';
 
 // components
@@ -27,7 +28,7 @@ const sleep = (milliseconds) => {
 
 const switchChain = async (network) => {
 
-  await axios.post('http://api.baseline.test/switch-chain', {
+  await axios.post(`${commitMgrServerUrl}/switch-chain`, {
       network: network,
     })
     .then((response) => {
@@ -53,10 +54,10 @@ const switchChain = async (network) => {
 export default function HeaderStats() {
 
   //const wallet = useWallet();
-  const { data: status, error: statusError } = useSwr('http://api.baseline.test/status', fetcherStatus);
-  const { data: network, error: netError } = useSwr('http://api.baseline.test/network-mode', fetcher);
-  const { data: db, error: dbError } = useSwr('http://api.baseline.test/db-status', fetcher);
-  const { data: commitments, error: commitError } = useSwr('http://api.baseline.test/get-commiments', { refreshInterval: 3000, fetcher: fetcher });
+  const { data: status, error: statusError } = useSwr(`${commitMgrServerUrl}/status`, fetcherStatus);
+  const { data: network, error: netError } = useSwr(`${commitMgrServerUrl}/network-mode`, fetcher);
+  const { data: db, error: dbError } = useSwr(`${commitMgrServerUrl}/db-status`, fetcher);
+  const { data: commitments, error: commitError } = useSwr(`${commitMgrServerUrl}/get-commiments`, { refreshInterval: 3000, fetcher: fetcher });
   
   return (
     <>

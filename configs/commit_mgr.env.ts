@@ -4,34 +4,14 @@ import { readFileSync } from 'fs';
 // Include envfile
 import { parse, stringify } from 'envfile';
 
+export function commitMgrServerUrl() {
+  return `http://api.baseline.test`;
+}
+
 export default function commitMgrEnv() {
 
     const fileEnvLocal = readFileSync('./.env.localdev', 'utf-8');
     const fileEnvLive = readFileSync('./.env.network', 'utf-8');
-    //console.log("ENV ---- ", parse(fileEnv));
-
-    /*const {
-      NODE_ENV,
-      LOG_LEVEL,
-      SERVER_PORT,
-      DATABASE_USER,
-      DATABASE_PASSWORD,
-      DATABASE_HOST,
-      DATABASE_NAME,
-      ETH_CLIENT_TYPE,
-      INFURA_ID,
-      ETH_CLIENT_WS,
-      ETH_CLIENT_HTTP,
-      CHAIN_ID,
-      WALLET_PRIVATE_KEY,
-      WALLET_PUBLIC_KEY,
-      LOCAL_ETH_CLIENT_TYPE,
-      LOCAL_ETH_CLIENT_WS,
-      LOCAL_ETH_CLIENT_HTTP,
-      LOCAL_CHAIN_ID,
-      LOCAL_WALLET_PRIVATE_KEY,
-      LOCAL_WALLET_PUBLIC_KEY
-    } = parse(fileEnv);*/
 
     const fileEnvParsed = parse(fileEnvLive);
     const fileEnvLocalParsed = parse(fileEnvLocal);
@@ -60,7 +40,5 @@ export default function commitMgrEnv() {
       LocalWalletPublicKey: fileEnvLocalParsed.WALLET_PUBLIC_KEY.replace(regex, '')
     };
   
-    //console.log("updatedEnv---- ", updatedEnv);
-
     return updatedEnv;
 }

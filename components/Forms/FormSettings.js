@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { Alert } from "../Utils/Alert";
+import { commitMgrServerUrl } from "../../configs/commit_mgr.env";
 
 const get_chain_id_info = (chainId) => {
   /* # Chain ID */
@@ -154,7 +155,7 @@ export default class FormSettings extends React.Component {
 
     componentDidMount(){
         
-        const data = axios.get('http://api.baseline.test/network-mode')
+        const data = axios.get(`${commitMgrServerUrl}/network-mode`)
 
         data.then((network) => {
         
@@ -214,7 +215,7 @@ export default class FormSettings extends React.Component {
         const { ws_provider , http_provider } = clientConfig;
         //console.log('clientConfig   ', clientConfig)
 
-        axios.post('http://api.baseline.test/save-settings', {
+        axios.post(`${commitMgrServerUrl}/save-settings`, {
             DATABASE_USER: DATABASE_USER,
             DATABASE_NAME: DATABASE_NAME,
             DATABASE_PASSWORD: DATABASE_PASSWORD, 

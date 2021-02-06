@@ -1,5 +1,6 @@
 import Swal from 'sweetalert2';
 import axios from "axios";
+import { commitMgrServerUrl } from "../../configs/commit_mgr.env";
 
 export function SendCommitment(walletAddress, shieldContractAddress, network) {
 //icon, title, message, buttonText
@@ -26,7 +27,7 @@ export function SendCommitment(walletAddress, shieldContractAddress, network) {
               )
             })*/
   
-            return await axios.post('http://api.baseline.test/send-commit', {
+            return await axios.post(`${commitMgrServerUrl}/send-commit`, {
                 network: network,
                 shieldAddress: shieldContractAddress,
                 newCommitment: newCommitment,

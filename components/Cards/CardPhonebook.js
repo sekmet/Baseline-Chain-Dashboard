@@ -4,7 +4,7 @@ import axios from "axios";
 import { Alert } from "../Utils/Alert";
 import useSwr from 'swr';
 import { addPhonebook } from '../Utils/Phonebook';
-
+import { commitMgrServerUrl } from "../../configs/commit_mgr.env";
 // components
 
 import PhonebookDropdown from "components/Dropdowns/PhonebookDropdown.js";
@@ -13,7 +13,7 @@ const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function CardPhonebook({ color }) {
 
-  const { data, error } = useSwr(`http://api.baseline.test/get-phonebook`, { refreshInterval: 3000, fetcher: fetcher });
+  const { data, error } = useSwr(`${commitMgrServerUrl}/get-phonebook`, { refreshInterval: 3000, fetcher: fetcher });
 
   return (
     <>
