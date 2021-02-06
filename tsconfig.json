@@ -27,10 +27,12 @@
   },
   "include": [
     "src/**/*",
+    "did/src/**/*",
     "artifacts"
   ],
   "exclude": [
     "node_modules",
-    "did"
+    "did/**/__tests__/**/*", 
+    "did/**/build/**/*",
   ]
 }
