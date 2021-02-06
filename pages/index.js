@@ -2,7 +2,7 @@ import React, { useEffect, useState }  from "react";
 import { useRouter } from 'next/router';
 import dotenv from "dotenv";
 import useSwr from 'swr';
-import { commitMgrServerUrl } from "../../configs/commit_mgr.env";
+import { commitMgrServerUrl } from "../configs/commit_mgr.env";
 import { useUser } from '../components/Utils/useUser';
 import { isWalletConnected } from '../components/Utils/isWalletConnected';
 import Iframe from '../components/Utils/Iframe';
