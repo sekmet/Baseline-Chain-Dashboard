@@ -14,6 +14,7 @@
 ## Development
 
 ### Building
+- npm install
 - npm run build:all
 
 ### Running Development
