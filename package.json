@@ -85,7 +85,7 @@
     "lint": "tslint -c tslint.json -p tsconfig.json --fix",
     "tsc": "tsc",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm run build:tailwind && npm run down && npm run dev",
-    "build:all": "npm-run-all build:tailwind build:didserver build:next up:besu clean lint tsc",
+    "build:all": "npm-run-all build:tailwind build:didserver build:next up:besu clean lint tsc && cp .env.localdev .env",
     "build": "npm-run-all clean lint tsc",
     "build:next": "next build",
     "build:didserver": "sh ./dafinstall.sh",
