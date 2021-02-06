@@ -18,6 +18,7 @@
 - npm run build:all
 
 ### Running Development
+- npm run up:besu
 - npm run dev
 
 ### Running Productive *alpha version
