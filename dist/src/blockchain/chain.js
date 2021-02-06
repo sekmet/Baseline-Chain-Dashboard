@@ -22,6 +22,7 @@ const hash_1 = require("../merkle-tree/hash");
 const Shield_json_1 = __importDefault(require("../../artifacts/Shield.json"));
 dotenv_1.default.config();
 const commitMgrEndpoint = "http://api.baseline.test/jsonrpc";
+const commitMgrServerUrl = "http://api.baseline.test";
 exports.web3provider = new ethers_1.ethers.providers.JsonRpcProvider(commitMgrEndpoint);
 exports.wallet = new ethers_1.Wallet(process.env.WALLET_PRIVATE_KEY, exports.web3provider);
 exports.txManager = process.env.ETH_CLIENT_TYPE;
@@ -82,7 +83,7 @@ exports.deployContracts = (sender, verifierContractAddress, network, saveContrac
     let treeHeight = 2;
     let contractInfo;
     if (verifierContractAddress === undefined) {
-        const verifierAddress = yield axios_1.default.post('http://api.baseline.test/deploy-verifier-contract', {
+        const verifierAddress = yield axios_1.default.post(`${commitMgrServerUrl}/deploy-verifier-contract`, {
             contractName: "Verifier.sol",
             deployedNetwork: network,
             sender: sender
@@ -146,7 +147,7 @@ exports.deployContracts = (sender, verifierContractAddress, network, saveContrac
     yield tx.wait();
     txHash = tx.hash;
     //################## Retrieve Shield.sol tx receipt
-    const txDetails = yield axios_1.default.post('http://api.baseline.test/jsonrpc', {
+    const txDetails = yield axios_1.default.post(`${commitMgrServerUrl}/jsonrpc`, {
         jsonrpc: "2.0",
         method: "eth_getTransactionReceipt",
         params: [txHash],
@@ -202,7 +203,7 @@ exports.deployContracts = (sender, verifierContractAddress, network, saveContrac
     logger_1.logger.debug(`TX Receipt Contract Address: ${txReceipt.txHash}`);
     logger_1.logger.debug(`TX Receipt Status: ${txReceipt.status}`);
     //################## Baseline_track should initiate merkle tree in db
-    const initiateMerkle = yield axios_1.default.post('http://api.baseline.test/jsonrpc', {
+    const initiateMerkle = yield axios_1.default.post(`${commitMgrServerUrl}/jsonrpc`, {
         jsonrpc: "2.0",
         method: "baseline_track",
         params: [shieldContractAddress],
@@ -220,7 +221,7 @@ exports.deployContracts = (sender, verifierContractAddress, network, saveContrac
     logger_1.logger.debug(`Initiate Merkle Tree Status: ${initiateMerkle}`);
     //#################### Baseline_getCommit should detect 1st leaf already in tree
     const leafIndex = 0;
-    const baselineGetCommit = yield axios_1.default.post('http://api.baseline.test/jsonrpc', {
+    const baselineGetCommit = yield axios_1.default.post(`${commitMgrServerUrl}/jsonrpc`, {
         jsonrpc: "2.0",
         method: "baseline_getCommit",
         params: [shieldContractAddress, leafIndex],
@@ -239,7 +240,7 @@ exports.deployContracts = (sender, verifierContractAddress, network, saveContrac
     });
     logger_1.logger.debug(`Baseline_getCommit should detect 1st leaf already in tree: ${baselineGetCommit.txHash}`);
     //###################### baseline_getRoot returns root hash
-    const baselineGetRoot = yield axios_1.default.post('http://api.baseline.test/jsonrpc', {
+    const baselineGetRoot = yield axios_1.default.post(`${commitMgrServerUrl}/jsonrpc`, {
         jsonrpc: "2.0",
         method: "baseline_getRoot",
         params: [shieldContractAddress],
@@ -274,7 +275,7 @@ exports.sendCommit = (newCommitment, sender, shieldContractAddress, network, sav
     const bufferCommitmentHash = Buffer.from(buffer);
     logger_1.logger.debug(`newCommitmentHash: 0x${bufferCommitmentHash.toString('hex')}`);
     const newCommitmentHash = `0x${bufferCommitmentHash.toString('hex')}`;
-    const sendCommitLeaf = yield axios_1.default.post('http://api.baseline.test/jsonrpc', {
+    const sendCommitLeaf = yield axios_1.default.post(`${commitMgrServerUrl}/jsonrpc`, {
         jsonrpc: "2.0",
         method: "baseline_verifyAndPush",
         params: [sender, shieldContractAddress, proof, publicInputs, newCommitmentHash],
@@ -300,7 +301,7 @@ exports.sendCommit = (newCommitment, sender, shieldContractAddress, network, sav
         return false;
     });
     //###################### baseline_getRoot returns root hash
-    const baselineGetRoot = yield axios_1.default.post('http://api.baseline.test/jsonrpc', {
+    const baselineGetRoot = yield axios_1.default.post(`${commitMgrServerUrl}/jsonrpc`, {
         jsonrpc: "2.0",
         method: "baseline_getRoot",
         params: [shieldContractAddress],
@@ -345,7 +346,7 @@ exports.sendFirstLeaf = (sender, shieldContractAddress, network) => __awaiter(vo
 });
 //baseline_track should initiate merkle tree in db
 exports.sendBaselineBalance = (senderAddress) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield axios_1.default.post('http://api.baseline.test/jsonrpc', {
+    return yield axios_1.default.post(`${commitMgrServerUrl}/jsonrpc`, {
         jsonrpc: "2.0",
         method: "eth_getBalance",
         params: [
@@ -366,7 +367,7 @@ exports.sendBaselineBalance = (senderAddress) => __awaiter(void 0, void 0, void 
 });
 //baseline_track should initiate merkle tree in db
 exports.sendBaselineTrack = (contractAddress, network) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield axios_1.default.post('http://api.baseline.test/jsonrpc', {
+    return yield axios_1.default.post(`${commitMgrServerUrl}/jsonrpc`, {
         jsonrpc: "2.0",
         method: "baseline_track",
         params: [contractAddress],
@@ -384,7 +385,7 @@ exports.sendBaselineTrack = (contractAddress, network) => __awaiter(void 0, void
 });
 //baseline_getTracked should return deployed contract
 exports.sendBaselineGetTracked = () => __awaiter(void 0, void 0, void 0, function* () {
-    return yield axios_1.default.post('http://api.baseline.test/jsonrpc', {
+    return yield axios_1.default.post(`${commitMgrServerUrl}/jsonrpc`, {
         jsonrpc: "2.0",
         method: "baseline_getTracked",
         params: [],
@@ -406,7 +407,7 @@ exports.sendBaselineVerifyAndPush = (sender, contractAddress, network) => __awai
     const proof = [5];
     const publicInputs = ["0x02d449a31fbb267c8f352e9968a79e3e5fc95c1bbeaa502fd6454ebde5a4bedc"]; // Sha256 hash of new commitment
     const newCommitment = "0x1111111111111111111111111111111111111111111111111111111111111115";
-    const res = yield axios_1.default.post("http://api.baseline.test/jsonrpc", {
+    const res = yield axios_1.default.post(`${commitMgrServerUrl}/jsonrpc`, {
         jsonrpc: "2.0",
         method: "baseline_verifyAndPush",
         params: [sender, contractAddress, proof, publicInputs, newCommitment],
@@ -440,7 +441,7 @@ exports.sendBaselineVerifyAndPush = (sender, contractAddress, network) => __awai
 exports.runTests3 = (senderAddress, network, saveContract) => __awaiter(void 0, void 0, void 0, function* () {
     //################ Deploy Verifier Contract
     let contractInfo;
-    const verifierAddress = yield axios_1.default.post('http://api.baseline.test/deploy-verifier-contract', {
+    const verifierAddress = yield axios_1.default.post(`${commitMgrServerUrl}/deploy-verifier-contract`, {
         contractName: "Verifier.sol",
         deployedNetwork: network,
         sender: senderAddress
@@ -484,7 +485,7 @@ exports.runTests3 = (senderAddress, network, saveContract) => __awaiter(void 0, 
         //Alert('error', 'ERROR...', "OOPS that didn't work :(");
     });
     //############# Deploy Shield Contract
-    yield axios_1.default.post('http://api.baseline.test/deploy-shield-contract', {
+    yield axios_1.default.post(`${commitMgrServerUrl}/deploy-shield-contract`, {
         contractName: "Shield.sol",
         deployedNetwork: network,
         verifierAddress: verifierAddress,

@@ -10,6 +10,8 @@
 - docker and docker-compose
 - node / npm
 - yarn
+- metamask
+- a infura account and some faucet ether...
 
 ## Development
 
@@ -18,7 +20,6 @@
 - npm run build:all
 
 ### Running Development
-- npm run up:besu
 - npm run dev
 
 ### Running Productive *alpha version

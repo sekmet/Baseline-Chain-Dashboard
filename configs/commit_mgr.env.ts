@@ -4,7 +4,7 @@ import { readFileSync } from 'fs';
 // Include envfile
 import { parse, stringify } from 'envfile';
 
-export function commitMgrServerUrl() {
+export const commitMgrServerUrl = () => {
   return `http://api.baseline.test`;
 }
 
