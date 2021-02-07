@@ -2,53 +2,83 @@
 
 ![Baseline Logo](./assets/img/baselineHorizontal-Logo-Full-Color.svg)
 
-## Video Demo
 
-[![Baseline Dashboard Demo](https://img.youtube.com/vi/Nm9v373pL0s/maxresdefault.jpg)](https://youtu.be/Nm9v373pL0s)
-
-
-## Requirements
+# Requirements
 - docker and docker-compose
 - node / npm
 - yarn
-- metamask
-- a infura account...
+- [metamask wallet](https://metamask.io/download.html)
+- ether account with some funds - [get Goerli faucets here](https://faucet.goerli.mudit.blog/)
+- [a infura account id](https://infura.io/)
 
-## Development
+# Usage and installation
 
-### Building
-- npm install
-- npm run build:all
+### Clone Repo
 
-### Running Development
-- npm run dev
+1. git clone https://github.com/sekmet/Baseline-Chain-Dashboard.git
 
-### Running Productive *alpha version
+### Install packages and dependencies
+
+2. cd Baseline-Chain-Dashboard
+3. npm install
+
+![Install packages and dependencies](./docs/install.gif)
+
+### Build
+
+![Build](./docs/build.gif)
+
+4. npm run build:all
+
+### Run development enviroment
+
+5. npm run up:besu
+6. npm run dev
+
+![Run development enviroment](./docs/run-dev.gif)
+
+### Or production enviroment
+
+- npm install -g pm2
 - npm run prod
 
-### Contracts [GOERLI TEST NET]
-[Shield.sol - 0x63758bc241d4cd924ebfbed273a2f6a1179f8f86](https://goerli.etherscan.io/address/0x63758bc241d4cd924ebfbed273a2f6a1179f8f86)
+# Setup and Settings
 
-[VerifierNoop.sol - 0x76f272ba2b1c3887f117dfeeb600e53b50a2207b](https://goerli.etherscan.io/address/0x76f272ba2b1c3887f117dfeeb600e53b50a2207b)
+- Open [http://localhost:3000](http://localhost:3000) in your browser
+- Login using your metamask wallet account
+- Go Settings -> fill "infura id" and wallet private key fields -> Save
+
+>*Switch network feature only fully works under production enviroment*
+
+
+# Video Demo
+
+[![Baseline Dashboard Demo](https://img.youtube.com/vi/Nm9v373pL0s/maxresdefault.jpg)](https://youtu.be/Nm9v373pL0s)
 
 # Screenshots
 
-![Login Page](./baseline_dashboard_login.png)
+![Login Page](./docs/baseline_dashboard_login.png)
 
-![Dashboard](./baseline_dashboard_1.png)
+![Dashboard](./docs/baseline_dashboard_1.png)
 
-![Dashboard](./baseline_dashboard_2.png)
+![Dashboard](./docs/baseline_dashboard_2.png)
 
-![Dashboard](./baseline_dashboard_3.png)
+![Dashboard](./docs/baseline_dashboard_3.png)
 
-![Switch Network](./baseline_dashboard_switch_network.png)
+![Switch Network](./docs/baseline_dashboard_switch_network.png)
 
-![Baseline DID Generator](./baseline_didgenerator.png)
+![Baseline DID Generator](./docs/baseline_didgenerator.png)
 
-![Baseline Basic Phonebook](./baseline_phonebook.png)
+![Baseline Basic Phonebook](./docs/baseline_phonebook.png)
 
-![Commit-mgr Settings](./baseline_dashboard_settings.png)
+![Commit-mgr Settings](./docs/baseline_dashboard_settings.png)
 
+
+# Contracts [GOERLI TEST NET]
+
+[Shield.sol - 0x63758bc241d4cd924ebfbed273a2f6a1179f8f86](https://goerli.etherscan.io/address/0x63758bc241d4cd924ebfbed273a2f6a1179f8f86)
+
+[VerifierNoop.sol - 0x76f272ba2b1c3887f117dfeeb600e53b50a2207b](https://goerli.etherscan.io/address/0x76f272ba2b1c3887f117dfeeb600e53b50a2207b)
 
 
 # Changelog
