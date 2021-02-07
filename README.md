@@ -13,36 +13,53 @@
 
 # Usage and installation
 
-### Clone Repo
+### 1. Clone Repo
 
-1. git clone https://github.com/sekmet/Baseline-Chain-Dashboard.git
+```sh
+git clone https://github.com/sekmet/Baseline-Chain-Dashboard.git
+```
 
-### Install packages and dependencies
+### 2. Install packages and dependencies
 
-2. cd Baseline-Chain-Dashboard
-3. npm install
+```sh
+cd Baseline-Chain-Dashboard
+```
 
+```sh
+npm install
+```
 ![Install packages and dependencies](./docs/install.gif)
 
-### Build
+### 3. Build
 
+```sh
+npm run build:all
+```
 ![Build](./docs/build.gif)
 
-4. npm run build:all
+### 4. Run development enviroment
 
-### Run development enviroment
+```sh
+npm run up:besu
+```
 
-5. npm run up:besu
-6. npm run dev
-
+```sh
+npm run dev
+```
 ![Run development enviroment](./docs/run-dev.gif)
 
 ### Or production enviroment
 
-- npm install -g pm2
-- npm run prod
+```sh
+npm install -g pm2
+```
 
-# Setup and Settings
+```sh
+npm run prod
+```
+
+
+# 5. Setup and Settings
 
 - Open [http://localhost:3000](http://localhost:3000) in your browser
 - Login using your metamask wallet account
@@ -54,6 +71,7 @@
 # Video Demo
 
 [![Baseline Dashboard Demo](https://img.youtube.com/vi/Nm9v373pL0s/maxresdefault.jpg)](https://youtu.be/Nm9v373pL0s)
+
 
 # Screenshots
 
