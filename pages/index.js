@@ -15,8 +15,6 @@ import CardTree from "../components/Cards/CardTree.js";
 import Admin from "../layouts/Admin.js";
 //const useUser = () => ({ user: false, status: 'disconnected', loading: false })
 
-//import { createGlobalState } from 'react-hooks-global-state';
-
 dotenv.config();
 
 const fetcher = (url) => fetch(url).then((res) => res.json());

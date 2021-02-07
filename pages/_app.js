@@ -7,8 +7,6 @@ import { UseWalletProvider } from 'use-wallet';
 import detectEthereumProvider from '@metamask/detect-provider';
 import PageChange from "components/PageChange/PageChange.js";
 
-import { createGlobalState } from 'react-hooks-global-state';
-
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "assets/styles/tailwind.css";
 
@@ -53,13 +51,6 @@ const getEthChainId = async () => {
     console.error('Please install MetaMask!');
   }
 }
-
-const initialState = { 
-  shieldContract: '',
-  shieldContractLocal: ''
- };
-
-const { useGlobalState } = createGlobalState(initialState);
 
 export default class MyApp extends App {
   componentDidMount = async () => {

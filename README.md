@@ -3,7 +3,8 @@
 ![Baseline Logo](./assets/img/baselineHorizontal-Logo-Full-Color.svg)
 
 ## Video Demo
-[![Baseline Dashboard Demo](./baseline_dashboard_login.png)](https://youtu.be/Nm9v373pL0s)
+
+[![Baseline Dashboard Demo](https://img.youtube.com/vi/Nm9v373pL0s/maxresdefault.jpg)](https://youtu.be/Nm9v373pL0s)
 
 
 ## Requirements
@@ -11,7 +12,7 @@
 - node / npm
 - yarn
 - metamask
-- a infura account and some faucet ether...
+- a infura account...
 
 ## Development
 

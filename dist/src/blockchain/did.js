@@ -28,55 +28,75 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.didVerifyWellKnownDidConfiguration = exports.didGenerateDidConfiguration = exports.didIdentityManagerCreateIdentity = exports.execShellTest = void 0;
+exports.didVerifyWellKnownDidConfiguration = exports.didGenerateDidConfiguration = exports.didIdentityManagerCreateIdentity = void 0;
 const shell = __importStar(require("shelljs"));
-exports.execShellTest = () => __awaiter(void 0, void 0, void 0, function* () {
+exports.didIdentityManagerCreateIdentity = (domain) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield shell.cd('did').exec(`yarn daf execute -m identityManagerCreateIdentity -a '{"domain":"${domain}"}'`);
+    try {
+        // Run external tool synchronously
+        if (result.code !== 0) {
+            shell.echo('Error: DAF identityManagerCreateIdentity failed');
+            //shell.exit(1);
+            shell.cd('..');
+            throw new Error('Error: DAF identityManagerCreateIdentity failed');
+        }
+        shell.cd('..');
+        return result.split('Result (Identity interface):')[1].split('Done')[0];
+    }
+    catch (error) {
+        return error;
+    }
+});
+exports.didGenerateDidConfiguration = (did, domain) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield shell.cd('did').exec(`yarn daf execute -m generateDidConfiguration -a '{"dids":["${did}"],"domain":"${domain}"}'`);
+    try {
+        // Run external tool synchronously
+        if (result.code !== 0) {
+            shell.echo('Error: DAF generateDidConfiguration failed');
+            //shell.exit(1);
+            shell.cd('..');
+            throw new Error('Error: DAF generateDidConfiguration failed');
+        }
+        shell.cd('..');
+        return result.split('):')[1].split('Done')[0];
+        //return result;
+    }
+    catch (error) {
+        return error;
+    }
+});
+exports.didVerifyWellKnownDidConfiguration = (domain) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield shell.cd('did').exec(`yarn daf execute -m verifyWellKnownDidConfiguration -a '{"domain":"${domain}"}'`);
+    try {
+        // Run external tool synchronously
+        if (result.code !== 0) {
+            shell.echo('Error: DAF verifyWellKnownDidConfiguration failed');
+            //shell.exit(1);
+            throw new Error('Error: DAF verifyWellKnownDidConfiguration failed');
+        }
+        if (result.split('):')[1] === undefined) {
+            shell.echo('Error: DAF verifyWellKnownDidConfiguration - Failed to download the .well-known DID');
+            //shell.exit(1);
+            shell.cd('..');
+            //typeof dafResponse === 'string'
+            throw new Error('Error: DAF verifyWellKnownDidConfiguration - Failed to download the .well-known DID');
+        }
+        shell.cd('..');
+        return result.split('):')[1].split('Done')[0];
+    }
+    catch (error) {
+        return error;
+    }
+});
+/*export const execShellTest = async () => {
+
     const result = shell.exec('git --version');
     // Run external tool synchronously
     if (result.code !== 0) {
         shell.echo('Error: Git commit failed');
         shell.exit(1);
     }
+
     return result;
-});
-exports.didIdentityManagerCreateIdentity = (domain) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield shell.cd('did').exec(`yarn daf execute -m identityManagerCreateIdentity -a '{"domain":"${domain}"}'`);
-    // Run external tool synchronously
-    if (result.code !== 0) {
-        shell.echo('Error: DAF identityManagerCreateIdentity failed');
-        //shell.exit(1);
-        return 'Error: DAF identityManagerCreateIdentity failed';
-    }
-    shell.cd('..');
-    return result.split('Result (Identity interface):')[1].split('Done')[0];
-});
-exports.didGenerateDidConfiguration = (did, domain) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield shell.cd('did').exec(`yarn daf execute -m generateDidConfiguration -a '{"dids":["${did}"],"domain":"${domain}"}'`);
-    // Run external tool synchronously
-    if (result.code !== 0) {
-        shell.echo('Error: DAF generateDidConfiguration failed');
-        //shell.exit(1);
-        return 'Error: DAF generateDidConfiguration failed';
-    }
-    shell.cd('..');
-    return result.split('):')[1].split('Done')[0];
-    //return result;
-});
-exports.didVerifyWellKnownDidConfiguration = (domain) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield shell.cd('did').exec(`yarn daf execute -m verifyWellKnownDidConfiguration -a '{"domain":"${domain}"}'`);
-    // Run external tool synchronously
-    if (result.code !== 0) {
-        shell.echo('Error: DAF verifyWellKnownDidConfiguration failed');
-        //shell.exit(1);
-        return 'Error: DAF verifyWellKnownDidConfiguration failed';
-    }
-    if (result.split('):')[1] === undefined) {
-        shell.echo('Error: DAF verifyWellKnownDidConfiguration - Failed to download the .well-known DID');
-        //shell.exit(1);
-        return 'Error: DAF verifyWellKnownDidConfiguration - Failed to download the .well-known DID';
-    }
-    shell.cd('..');
-    return result.split('):')[1].split('Done')[0];
-    //return result;
-});
+}*/ 
 //# sourceMappingURL=did.js.map

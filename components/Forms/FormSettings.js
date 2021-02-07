@@ -303,7 +303,7 @@ export default class FormSettings extends React.Component {
 
         //console.log({...this.state})
 
-        if (!this.state) return false;
+        //if (!this.state) return false;
 
         return (
             <>
@@ -474,7 +474,7 @@ export default class FormSettings extends React.Component {
                     </div>
 
                     <h6 className="text-gray-500 text-sm mt-3 mb-6 font-bold uppercase">
-                    Wallet / DID Identity
+                    Wallet Information [ Local Dev ]
                     </h6>
                     <div className="flex flex-wrap">
                     <div className="w-full lg:w-12/12 px-4">
@@ -594,7 +594,7 @@ export default class FormSettings extends React.Component {
                     </div>
 
                     <h6 className="text-gray-500 text-sm mt-3 mb-6 font-bold uppercase">
-                    Wallet / DID Identity
+                    Wallet Information [ Mainnet/Testnet ] 
                     </h6>
                     <div className="flex flex-wrap">
                     <div className="w-full lg:w-12/12 px-4">

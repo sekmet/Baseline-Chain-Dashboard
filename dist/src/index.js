@@ -317,7 +317,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         const resultDid = JSON.parse(yield did_1.didVerifyWellKnownDidConfiguration(entryInfo.domain));
         const result = '';
-        if (resultDid) {
+        if (resultDid && resultDid.domain) {
             logger_1.logger.debug(resultDid);
             const phoneEntry = {
                 name: resultDid.domain,

@@ -70,7 +70,7 @@ export default function HeaderStats() {
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                 <CardStats
                   statSubtitle="COMMITMENTS"
-                  statTitle={commitments ? commitments.length : "0"}
+                  statTitle={commitments ? `${commitments.length}` : "0"}
                   statArrow="up"
                   statPercent=" "
                   statPercentColor="text-blue-500"
@@ -116,12 +116,12 @@ export default function HeaderStats() {
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                 <CardStats
                   statSubtitle="STATUS"
-                  statTitle={!status ? "Loading..." : status}
+                  statTitle={!status ? "Loading..." : !statusError ? status : 'Error'}
                   statArrow="up"
                   statPercent={network ? `[${network.commitServerPort}]` : '...'}
                   statPercentColor="text-green-500"
                   statDescription={statusError ? "Failed to load status" : "Commitment-mgr status"}
-                  statIconName={statusError ? "fas fa-error" : "fas fa-check"}
+                  statIconName={statusError ? "fas fa-times" : "fas fa-check"}
                   statIconColor={statusError ? "bg-red-500" : "bg-green-500"}
                 />
               </div>

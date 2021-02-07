@@ -9,8 +9,8 @@ import shieldContract from "../../artifacts/Shield.json";
 
 dotenv.config();
 
-const commitMgrEndpoint = "http://api.baseline.test/jsonrpc";
-const commitMgrServerUrl = "http://api.baseline.test";
+const commitMgrEndpoint = "http://localhost:4001/jsonrpc";
+const commitMgrServerUrl = "http://localhost:4001";
 
 export const web3provider = new ethers.providers.JsonRpcProvider(commitMgrEndpoint);
 export const wallet = new Wallet(process.env.WALLET_PRIVATE_KEY, web3provider);

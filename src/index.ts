@@ -10,7 +10,7 @@ import { merkleTrees } from "./db/models/MerkleTree";
 import { commitmentBaseline } from "./db/models/Commitment";
 import { contractBaseline } from "./db/models/Contract";
 import { phonebookBaseline } from "./db/models/Phonebook";
-import { execShellTest, didIdentityManagerCreateIdentity, didGenerateDidConfiguration, didVerifyWellKnownDidConfiguration } from "./blockchain/did";
+import { didIdentityManagerCreateIdentity, didGenerateDidConfiguration, didVerifyWellKnownDidConfiguration } from "./blockchain/did";
 import { get_ws_provider, restartSubscriptions, sendBaselineBalance, deployContracts, sendCommit, sendBaselineTrack, sendBaselineGetTracked, sendBaselineVerifyAndPush, sendFirstLeaf, runTests, switchChain } from "./blockchain";
 
 import * as fs from 'fs';
@@ -358,9 +358,10 @@ const main = async () => {
       logger.error("No domain to add...");
       return false;
     }
+
     const resultDid = JSON.parse(await didVerifyWellKnownDidConfiguration(entryInfo.domain));
     const result = '';
-    if (resultDid){
+    if (resultDid && resultDid.domain){
       logger.debug(resultDid);
       const phoneEntry = {
         name: resultDid.domain,
