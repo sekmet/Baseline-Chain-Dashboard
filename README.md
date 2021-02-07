@@ -1,4 +1,4 @@
-# Baseline-Chain-Dashboard
+# Baseline Chain Dashboard(bri-2)
 
 ![Baseline Logo](./assets/img/baselineHorizontal-Logo-Full-Color.svg)
 
