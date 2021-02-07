@@ -4,7 +4,8 @@
   "description": "Baseline Dashboard  - A commit-mrg UI",
   "main": "dist/src/index.js",
   "private": true,
-  "license": "MIT",
+  "author": "Carlos Guimaraes",
+  "license": "SEE LICENSE in LICENSE.md",
   "dependencies": {
     "@fortawesome/fontawesome-free": "5.14.0",
     "@metamask/detect-provider": "^1.2.0",
