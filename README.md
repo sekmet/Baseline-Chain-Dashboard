@@ -67,6 +67,7 @@ npm run prod
 
 >*Switch network feature only fully works under production enviroment*
 
+![Save settings](./docs/save-settings.jpg)
 
 # Video Demo
 
