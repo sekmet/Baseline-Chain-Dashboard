@@ -5,7 +5,7 @@ module.exports = {
     watch: ["."],
     // Delay between restart
     watch_delay: 1000,
-    ignore_watch : ["dist/node_modules", "node_modules", "dist/logs", "logs", "dist/out", "out", "dist/public", "public", "did"],
+    ignore_watch : [".git", "dist/node_modules", "node_modules", "dist/logs", "logs", "dist/out", "out", "dist/public", "public", "did"],
   },{
     name: 'ui-dashboard',
     script: 'node_modules/next/dist/bin/next',

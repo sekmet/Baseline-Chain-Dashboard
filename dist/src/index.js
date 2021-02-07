@@ -311,27 +311,44 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     }));
     app.post('/add-phonebook', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const entryInfo = req.body;
-        if (!entryInfo) {
-            logger_1.logger.error("No domain to add...");
-            return false;
+        const resultDid = yield did_1.didVerifyWellKnownDidConfiguration(entryInfo.domain);
+        try {
+            if (!entryInfo) {
+                logger_1.logger.error("No domain to add...");
+                throw new Error("No domain to add...");
+            }
+            let result;
+            if (resultDid) {
+                try {
+                    result = JSON.parse(resultDid);
+                }
+                catch (e) {
+                    logger_1.logger.error(e);
+                    res.status(404).send("Failed to download the .well-known DID from domain");
+                }
+                if (result.domain == null) {
+                    res.status(404).send("Failed to download the .well-known DID from domain");
+                    // return false;
+                }
+                const phoneEntry = {
+                    name: result.domain,
+                    network: result.dids[0].split(':')[1] === 'key' ? '-key-' : result.dids[0].split(':')[2],
+                    domain: result.domain,
+                    dididentity: result.dids[0],
+                    status: 'verified',
+                    active: true
+                };
+                yield savePhonebookEntry(phoneEntry);
+                res.send(result || {});
+            }
+            else {
+                throw new Error("Failed to download the .well-known DID from domain");
+            }
+            // res.send(result || {});
         }
-        const resultDid = JSON.parse(yield did_1.didVerifyWellKnownDidConfiguration(entryInfo.domain));
-        const result = '';
-        if (resultDid && resultDid.domain) {
-            logger_1.logger.debug(resultDid);
-            const phoneEntry = {
-                name: resultDid.domain,
-                network: resultDid.dids[0].split(':')[1] === 'key' ? '-key-' : resultDid.dids[0].split(':')[2],
-                domain: resultDid.domain,
-                dididentity: resultDid.dids[0],
-                status: 'verified',
-                active: true
-            };
-            yield savePhonebookEntry(phoneEntry);
-            res.send(resultDid || {});
-            return true;
+        catch (error) {
+            return error;
         }
-        res.send(result || {});
     }));
     // api for get merkle data from database
     app.get("/remove-phonebook/:entryId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -643,6 +660,9 @@ DATABASE_NAME="${settings.DATABASE_NAME}"
 # "infura": Infura's traditional jsonrpc API
 ETH_CLIENT_TYPE="${settings.LOCAL_ETH_CLIENT_TYPE}"
 
+# Infura key
+INFURA_ID=""
+
 # Local client endpoints
 # Websocket port
 # 8545: ganache
@@ -665,7 +685,7 @@ WALLET_PUBLIC_KEY="${settings.LOCAL_WALLET_PUBLIC_KEY}"
 `, "../../.env.localdev");
         // ##################### LIVE ENV
         saveEnv(`# Set to production when deploying to production
-NODE_ENV="development"
+NODE_ENV="production"
 LOG_LEVEL="debug"
 
 # Node.js server configuration

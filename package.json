@@ -93,7 +93,7 @@
     "dev": "nodemon --watch src -e ts,ejs,js --exec npm-run-all build start start:didserver",
     "start": "node . & next dev -H 0.0.0.0",
     "prod": "npm-run-all build build:next start:prod",
-    "start:prod": "cp ecosystem.config.js dist/ && pm2 start dist/ecosystem.config.js --no-daemon",
+    "start:prod": "cp ecosystem.config.js dist/ && cp -r did dist/ && pm2 start dist/ecosystem.config.js --no-daemon",
     "test": "NODE_ENV=test jest --runInBand --verbose --detectOpenHandles --forceExit",
     "up:besu": "docker-compose up -d alice-mongo alice-besu",
     "up:ganache": "sudo docker-compose up -d alice-mongo ganache",

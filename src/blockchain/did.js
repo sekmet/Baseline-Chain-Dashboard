@@ -59,11 +59,10 @@ export const didVerifyWellKnownDidConfiguration = async (domain) => {
         }
     
         if (result.split('):')[1] === undefined){
+            shell.cd('..');
             shell.echo('Error: DAF verifyWellKnownDidConfiguration - Failed to download the .well-known DID');
             //shell.exit(1);
-            shell.cd('..');
-            //typeof dafResponse === 'string'
-            throw new Error('Error: DAF verifyWellKnownDidConfiguration - Failed to download the .well-known DID');
+            throw new Error('DAF verifyWellKnownDidConfiguration - Failed to download the .well-known DID');
         }
     
         shell.cd('..');

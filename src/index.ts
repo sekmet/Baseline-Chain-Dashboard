@@ -353,30 +353,53 @@ const main = async () => {
   app.post('/add-phonebook', async (req: any, res: any) => {
 
     const entryInfo = req.body;
+    const resultDid = await didVerifyWellKnownDidConfiguration(entryInfo.domain);
 
-    if (!entryInfo) {
-      logger.error("No domain to add...");
-      return false;
-    }
+    try {
 
-    const resultDid = JSON.parse(await didVerifyWellKnownDidConfiguration(entryInfo.domain));
-    const result = '';
-    if (resultDid && resultDid.domain){
-      logger.debug(resultDid);
-      const phoneEntry = {
-        name: resultDid.domain,
-        network: resultDid.dids[0].split(':')[1] === 'key' ? '-key-' : resultDid.dids[0].split(':')[2], // did network
-        domain: resultDid.domain, // did domain
-        dididentity: resultDid.dids[0], // did identity
-        status: 'verified', // did verification status
-        active: true
+      if (!entryInfo) {
+        logger.error("No domain to add...");
+        throw new Error("No domain to add...");
       }
-      await savePhonebookEntry(phoneEntry);
-      res.send(resultDid || {});
-      return true;
+
+      let result;
+
+      if (resultDid){
+
+        try {
+          result = JSON.parse(resultDid);
+        } catch (e) {
+          logger.error(e);
+          res.status(404).send("Failed to download the .well-known DID from domain");
+        }
+
+        if (result.domain == null){
+          res.status(404).send("Failed to download the .well-known DID from domain");
+          // return false;
+        }
+
+        const phoneEntry = {
+          name: result.domain,
+          network: result.dids[0].split(':')[1] === 'key' ? '-key-' : result.dids[0].split(':')[2], // did network
+          domain: result.domain, // did domain
+          dididentity: result.dids[0], // did identity
+          status: 'verified', // did verification status
+          active: true
+        }
+        await savePhonebookEntry(phoneEntry);
+        res.send(result || {});
+
+      } else {
+
+        throw new Error("Failed to download the .well-known DID from domain");
+      }
+
+      // res.send(result || {});
+
+    } catch (error) {
+      return error;
     }
 
-    res.send(result || {});
   });
 
 
@@ -756,6 +779,9 @@ DATABASE_NAME="${settings.DATABASE_NAME}"
 # "infura": Infura's traditional jsonrpc API
 ETH_CLIENT_TYPE="${settings.LOCAL_ETH_CLIENT_TYPE}"
 
+# Infura key
+INFURA_ID=""
+
 # Local client endpoints
 # Websocket port
 # 8545: ganache
@@ -780,7 +806,7 @@ WALLET_PUBLIC_KEY="${settings.LOCAL_WALLET_PUBLIC_KEY}"
 
 // ##################### LIVE ENV
 saveEnv(`# Set to production when deploying to production
-NODE_ENV="development"
+NODE_ENV="production"
 LOG_LEVEL="debug"
 
 # Node.js server configuration

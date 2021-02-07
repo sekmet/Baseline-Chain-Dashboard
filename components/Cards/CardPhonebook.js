@@ -47,7 +47,7 @@ export default function CardPhonebook({ color }) {
           </div>
         </div>   
 
-        <div className="block w-full overflow-x-auto" style={{ minHeight: "436px"}}>
+        <div className="block w-full overflow-x-auto" style={{ minHeight: "449px"}}>
           {/* Phonebook table */}
           <table className="items-center w-full bg-transparent border-collapse">
             <thead>

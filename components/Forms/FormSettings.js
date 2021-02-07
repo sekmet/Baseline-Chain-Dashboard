@@ -48,7 +48,7 @@ const getEthClientInfo = (ethClientType, chainId, infuraId) => {
   // get chain information to connect
   const chain_info = get_chain_id_info(chainId);
 
-  //console.log("chain_inf  ", chain_info)
+  console.log("chain_inf  ", chain_info, ethClientType)
 
   let eth_client_ws;
   let eth_client_http;
@@ -212,8 +212,8 @@ export default class FormSettings extends React.Component {
         } = this.state;
 
         const clientConfig = getEthClientInfo(ETH_CLIENT_TYPE, CHAIN_ID, INFURA_ID);
-        const { ws_provider , http_provider } = clientConfig;
-        //console.log('clientConfig   ', clientConfig)
+        const { ws_provider, http_provider } = clientConfig;
+        console.log('clientConfig   ', clientConfig)
 
         axios.post(`${commitMgrServerUrl}/save-settings`, {
             DATABASE_USER: DATABASE_USER,
@@ -224,7 +224,7 @@ export default class FormSettings extends React.Component {
             INFURA_ID: INFURA_ID,
             ETH_CLIENT_WS: ws_provider ? ws_provider : ETH_CLIENT_WS,
             ETH_CLIENT_HTTP: http_provider ? http_provider : ETH_CLIENT_HTTP,
-            CHAIN_ID: (ETH_CLIENT_TYPE === 'besu' || ETH_CLIENT_TYPE === 'ganache') ? 101010 : CHAIN_ID,
+            CHAIN_ID: CHAIN_ID,
             WALLET_PRIVATE_KEY: WALLET_PRIVATE_KEY,
             WALLET_PUBLIC_KEY: WALLET_PUBLIC_KEY,
             LOCAL_ETH_CLIENT_TYPE: LOCAL_ETH_CLIENT_TYPE,
@@ -303,7 +303,7 @@ export default class FormSettings extends React.Component {
 
         //console.log({...this.state})
 
-        //if (!this.state) return false;
+        if (!this.state) return false;
 
         return (
             <>

@@ -9,7 +9,7 @@ const removeEntry = async (entryId) => {
   return await axios.get(`${commitMgrServerUrl}/remove-phonebook/${entryId}`)
     .then((response) => {
         //access the resp here....
-        console.log(`Status Phonebook : ${response.data}`);
+        console.log(`Status Phonebook : ${response.data.ok}`);
         Alert('success', 'Phonebook removed...', `Phonebook entry removed with success...`);
         return response.data;
     })
